@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Migri Eligibility Calculator</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 2rem auto; line-height: 1.5; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; box-shadow: 2px 2px 10px #eee; }
+        input, select, button { width: 100%; margin: 10px 0; padding: 8px; box-sizing: border-box; }
+        button { background: #003580; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        #output { margin-top: 20px; font-weight: bold; padding: 10px; border-radius: 4px; }
+        .eligible { background: #d4edda; color: #155724; }
+        .not-eligible { background: #f8d7da; color: #721c24; }
+    </style>
+    <script src="wasm_exec.js"></script>
+</head>
+<body>
+    <div class="card">
+        <h2>Residence Calculator</h2>
+        <label>Permit Type</label>
+        <select id="type">
+            <option value="A">Continuous (A)</option>
+            <option value="B">Temporary (B)</option>
+        </select>
+
+        <label>Start Date</label>
+        <input type="date" id="start" value="2020-01-01">
+
+        <label>End Date</label>
+        <input type="date" id="end" value="2025-01-01">
+
+        <button onclick="runCalculation()">Check Eligibility</button>
+
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // Инициализация Go WASM
+        const go = new Go();
+        WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+            go.run(result.instance);
+            console.log("Go WASM loaded!");
+        });
+
+        function runCalculation() {
+            const type = document.getElementById('type').value;
+            const start = document.getElementById('start').value;
+            const end = document.getElementById('end').value;
+
+            // Вызываем функцию, которую мы зарегистрировали в Go
+            const result = calculateEligibility(type, start, end);
+            
+            const out = document.getElementById('output');
+            out.className = result.is_eligible ? 'eligible' : 'not-eligible';
+            out.innerHTML = `
+                Total Days: ${result.total_days.toFixed(0)} <br>
+                Eligible: ${result.is_eligible ? 'YES' : 'NO'} <br>
+                ${result.message}
+            `;
+        }
+    </script>
+</body>
+</html>
