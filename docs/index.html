@@ -1,61 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
-    <title>Migri Eligibility Calculator</title>
-    <style>
-        body { font-family: sans-serif; max-width: 500px; margin: 2rem auto; line-height: 1.5; }
-        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; box-shadow: 2px 2px 10px #eee; }
-        input, select, button { width: 100%; margin: 10px 0; padding: 8px; box-sizing: border-box; }
-        button { background: #003580; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        #output { margin-top: 20px; font-weight: bold; padding: 10px; border-radius: 4px; }
-        .eligible { background: #d4edda; color: #155724; }
-        .not-eligible { background: #f8d7da; color: #721c24; }
-    </style>
+    <title>Finnish Eligibility Calculator</title>
     <script src="wasm_exec.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; color: #333; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
+        h2 { color: #003580; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #eef; border-radius: 8px; }
+        .section-title { font-weight: bold; margin-bottom: 10px; color: #555; text-transform: uppercase; font-size: 0.8em; }
+        label { display: block; margin: 5px 0; font-size: 0.9em; }
+        input { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #003580; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1em; }
+        button:hover { background: #002560; }
+        #result { margin-top: 20px; padding: 20px; border-radius: 8px; display: none; }
+        .success { background: #e6fffa; border: 1px solid #38b2ac; color: #234e52; }
+        .fail { background: #fff5f5; border: 1px solid #feb2b2; color: #822727; }
+    </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Residence Calculator</h2>
-        <label>Permit Type</label>
-        <select id="type">
-            <option value="A">Continuous (A)</option>
-            <option value="B">Temporary (B)</option>
-        </select>
+    <div class="container">
+        <h2>Eligibility Calculator</h2>
+        
+        <div class="section">
+            <div class="section-title">B-type residency (50%)</div>
+            <label>Start Date</label>
+            <input type="date" id="b_start">
+            <label>End Date</label>
+            <input type="date" id="b_end">
+        </div>
 
-        <label>Start Date</label>
-        <input type="date" id="start" value="2020-01-01">
+        <div class="section">
+            <div class="section-title">A-type residency (100%)</div>
+            <label>Start Date</label>
+            <input type="date" id="a_start">
+            <label>End Date</label>
+            <input type="date" id="a_end">
+        </div>
 
-        <label>End Date</label>
-        <input type="date" id="end" value="2025-01-01">
+        <div class="section">
+            <div class="section-title">Absence</div>
+            <label>Total days abroad during 5y period</label>
+            <input type="number" id="abroad" value="0">
+        </div>
 
-        <button onclick="runCalculation()">Check Eligibility</button>
+        <button onclick="calculate()">Calculate Status</button>
 
-        <div id="output"></div>
+        <div id="result"></div>
     </div>
 
     <script>
-        // Инициализация Go WASM
         const go = new Go();
         WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
             go.run(result.instance);
-            console.log("Go WASM loaded!");
         });
 
-        function runCalculation() {
-            const type = document.getElementById('type').value;
-            const start = document.getElementById('start').value;
-            const end = document.getElementById('end').value;
-
-            // Вызываем функцию, которую мы зарегистрировали в Go
-            const result = calculateEligibility(type, start, end);
+        function calculate() {
+            const permits = [];
             
-            const out = document.getElementById('output');
-            out.className = result.is_eligible ? 'eligible' : 'not-eligible';
-            out.innerHTML = `
-                Total Days: ${result.total_days.toFixed(0)} <br>
-                Eligible: ${result.is_eligible ? 'YES' : 'NO'} <br>
-                ${result.message}
+            // Собираем данные по B, если они введены
+            if (document.getElementById('b_start').value && document.getElementById('b_end').value) {
+                permits.push({
+                    type: "B",
+                    start: document.getElementById('b_start').value,
+                    end: document.getElementById('b_end').value
+                });
+            }
+
+            // Собираем данные по A
+            if (document.getElementById('a_start').value && document.getElementById('a_end').value) {
+                permits.push({
+                    type: "A",
+                    start: document.getElementById('a_start').value,
+                    end: document.getElementById('a_end').value
+                });
+            }
+
+            const abroad = parseInt(document.getElementById('abroad').value) || 0;
+
+            // Вызов Go функции
+            const res = calculateEligibility(permits, abroad);
+            
+            const div = document.getElementById('result');
+            div.style.display = 'block';
+            div.className = res.is_eligible ? 'success' : 'fail';
+            
+            div.innerHTML = `
+                <strong>Result:</strong> ${res.is_eligible ? "Eligible for Citizenship" : "Not yet eligible"}<br>
+                <strong>Effective Days:</strong> ${Math.round(res.total_days)} / 1825<br>
+                <p><small>${res.message}</small></p>
             `;
         }
     </script>
