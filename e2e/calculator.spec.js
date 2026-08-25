@@ -22,3 +22,12 @@ test("rejects a permit period with reversed dates before calculation", async ({ 
   await page.getByRole("button", { name: "Calculate my estimate" }).click();
   await expect(page.getByRole("alert")).toHaveText("A permit end date cannot be before its start date.");
 });
+
+test("translates all primary Russian form controls", async ({ page }) => {
+  await page.goto("/");
+  await page.getByLabel("Language").selectOption("ru");
+  await expect(page.locator("#residence-heading")).toHaveText("1. История разрешений на проживание");
+  await expect(page.locator("#citizenship-route option[value=standard]")).toHaveText("Стандартный путь — 8 лет");
+  await expect(page.locator("#pr-path option[value=six_years]")).toHaveText("6 лет + язык B1 + 2 года работы");
+  await expect(page.locator("[data-i18n=tripHelp]")).toHaveText(/День выезда из Финляндии/);
+});
