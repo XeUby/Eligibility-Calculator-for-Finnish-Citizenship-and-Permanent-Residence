@@ -4,6 +4,8 @@ A private, browser-only estimator for the **residence-time** part of common Finn
 
 The published site is built as Go/WebAssembly and runs entirely in the visitor’s browser. Residence history and absence dates are not submitted, logged or stored.
 
+The interface is available in English, Finnish, Swedish, Russian, Ukrainian, Nepali, Arabic, Somali, Estonian and Hindi. Official Migri source links remain in their published language.
+
 ## What it estimates
 
 - Citizenship applications submitted from 1 October 2024: 8 years on the standard route, or 5 years where the statutory language route applies.
@@ -19,6 +21,11 @@ Official sources, last reviewed 26 August 2026:
 - [Migri: citizenship application for adults](https://migri.fi/en/citizenship-for-adults)
 - [Migri: permanent residence permits](https://migri.fi/en/permanent-residence-permit)
 - [Migri: 2026 processing fees](https://migri.fi/en/processing-fees-and-payment-methods)
+- [Migri: citizenship test for applications from 1 March 2027](https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027)
+
+## Confirmed upcoming change
+
+Parliament has approved the next Citizenship Act change. For applications submitted on or after **1 March 2027**, applicants aged 18–64 will need to meet a civic-knowledge requirement. Migri says this is normally met with the new citizenship test; specified alternatives and exemptions are available. The calculator warns when its projected citizenship date falls on or after that application date. This is a confirmed future rule, not merely a government proposal.
 
 ## Local development
 

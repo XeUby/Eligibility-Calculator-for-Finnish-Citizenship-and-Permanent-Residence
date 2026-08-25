@@ -62,21 +62,21 @@
 <body>
   <header>
     <div class="wrap">
-      <h1>Finland eligibility estimator</h1>
-      <p>Estimate the residence-time part of Finnish citizenship and permanent-residence applications. Calculations run privately in this browser; no data is sent or stored.</p>
+      <div class="section-head"><h1 data-i18n="title">Finland eligibility estimator</h1><label class="language"><span class="sr-only">Language</span><select id="language" aria-label="Language"></select></label></div>
+      <p data-i18n="intro">Estimate the residence-time part of Finnish citizenship and permanent-residence applications. Calculations run privately in this browser; no data is sent or stored.</p>
     </div>
   </header>
   <main class="wrap">
     <aside class="notice" aria-label="Important legal notice">
-      <strong>Not legal advice or an application decision.</strong>
-      This tool covers selected residence-time rules only. Migri decides every application and can assess facts this site cannot verify.
+      <strong data-i18n="legalTitle">Not legal advice or an application decision.</strong>
+      <span data-i18n="legalBody">This tool covers selected residence-time rules only. Migri decides every application and can assess facts this site cannot verify.</span>
     </aside>
 
     <form id="calculator" novalidate>
       <section class="panel" aria-labelledby="residence-heading">
         <div class="section-head">
-          <div><h2 id="residence-heading">1. Residence-permit history</h2><p>Add every uninterrupted permit period relevant to your calculation.</p></div>
-          <button class="secondary" type="button" id="add-permit">Add permit period</button>
+          <div><h2 id="residence-heading" data-i18n="residenceHeading">1. Residence-permit history</h2><p data-i18n="residenceIntro">Add every uninterrupted permit period relevant to your calculation.</p></div>
+          <button class="secondary" type="button" id="add-permit" data-i18n="addPermit">Add permit period</button>
         </div>
         <div id="permit-list" class="history"></div>
         <p class="help">A = continuous permit, B = temporary permit, P = permanent permit. Permit end dates are included.</p>
@@ -84,18 +84,18 @@
 
       <section class="panel" aria-labelledby="absence-heading">
         <div class="section-head">
-          <div><h2 id="absence-heading">2. Trips outside Finland</h2><p>Optional, but add trips during the period you want assessed.</p></div>
-          <button class="secondary" type="button" id="add-absence">Add trip</button>
+          <div><h2 id="absence-heading" data-i18n="tripsHeading">2. Trips outside Finland</h2><p data-i18n="tripsIntro">Optional, but add trips during the period you want assessed.</p></div>
+          <button class="secondary" type="button" id="add-absence" data-i18n="addTrip">Add trip</button>
         </div>
         <div id="absence-list" class="history"></div>
         <p class="help">The day you leave Finland and the day you return count as residence days, following Migri’s published guidance.</p>
       </section>
 
       <section class="panel" aria-labelledby="route-heading">
-        <h2 id="route-heading">3. Choose the routes to estimate</h2>
+        <h2 id="route-heading" data-i18n="routesHeading">3. Choose the routes to estimate</h2>
         <div class="choices">
           <div>
-            <label for="citizenship-route">Citizenship route</label>
+            <label for="citizenship-route" data-i18n="citizenshipRoute">Citizenship route</label>
             <select id="citizenship-route">
               <option value="standard">Standard route — 8 years</option>
               <option value="language">Language route — 5 years</option>
@@ -103,7 +103,7 @@
             <p class="field-help">The 5-year route requires the statutory language qualification. Special routes are not modelled.</p>
           </div>
           <div>
-            <label for="pr-path">Permanent residence path</label>
+            <label for="pr-path" data-i18n="prRoute">Permanent residence path</label>
             <select id="pr-path">
               <option value="six_years">6 years + B1 language + 2 years’ work</option>
               <option value="high_income">4 years + annual income over €40,000</option>
@@ -113,21 +113,21 @@
             <p class="field-help">These paths apply to applications submitted on or after 8 January 2026.</p>
           </div>
           <div>
-            <label for="as-of">Calculate as of</label>
+            <label for="as-of" data-i18n="calculateAsOf">Calculate as of</label>
             <input id="as-of" type="date" required>
           </div>
           <div>
             <span class="sr-only">Condition confirmation</span>
-            <label class="check"><input id="conditions-met" type="checkbox"><span>I confirm that I meet the additional conditions shown for my chosen permanent-residence path.</span></label>
+            <label class="check"><input id="conditions-met" type="checkbox"><span data-i18n="conditions">I confirm that I meet the additional conditions shown for my chosen permanent-residence path.</span></label>
           </div>
         </div>
         <p id="form-error" class="form-error" role="alert" aria-live="assertive"></p>
-        <button class="primary" type="submit">Calculate my estimate</button>
+        <button class="primary" type="submit" data-i18n="calculate">Calculate my estimate</button>
       </section>
     </form>
 
     <section id="results" class="panel results" hidden aria-live="polite" aria-labelledby="results-heading">
-      <h2 id="results-heading">Your estimate</h2>
+      <h2 id="results-heading" data-i18n="resultsHeading">Your estimate</h2>
       <p class="help">“Meets residence time” is not a decision or a recommendation to apply.</p>
       <div class="result-grid">
         <article class="result citizenship">
@@ -149,7 +149,11 @@
     </section>
 
     <section class="panel" aria-labelledby="sources-heading">
-      <h2 id="sources-heading">Official information</h2>
+      <section class="notice" aria-labelledby="upcoming-heading">
+        <strong id="upcoming-heading" data-i18n="upcomingTitle">Confirmed upcoming citizenship change — applications from 1 March 2027</strong>
+        <span data-i18n="upcomingText">Applicants aged 18–64 will need to meet a civic-knowledge requirement. Migri says this can normally be met with the new citizenship test, with specified alternatives and exemptions.</span> <a href="https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027" target="_blank" rel="noopener noreferrer" data-i18n="officialUpdate">Read Migri’s official update</a>.
+      </section>
+      <h2 id="sources-heading" data-i18n="officialInfo">Official information</h2>
       <p class="help">Rules and fees can change. Last reviewed: 26 August 2026.</p>
       <div class="resources">
         <article class="resource"><h3>Citizenship</h3><p><a href="https://migri.fi/en/citizenship-for-adults" target="_blank" rel="noopener noreferrer">Citizenship application for adults</a></p><p><a href="https://migri.fi/en/how-to-calculate-the-period-of-residence" target="_blank" rel="noopener noreferrer">How Migri calculates residence</a></p></article>
@@ -160,22 +164,39 @@
   </main>
   <footer class="wrap">Open-source educational tool. It does not collect personal data.</footer>
 
+  <script src="i18n.js"></script>
   <script>
     const $ = (selector, parent = document) => parent.querySelector(selector);
     const permitList = $("#permit-list"), absenceList = $("#absence-list");
+    const language = $("#language");
+    function translate() {
+      const locale = language.value;
+      document.documentElement.lang = locale;
+      document.querySelectorAll("[data-i18n]").forEach((element) => { element.textContent = window.i18n.t(locale, element.dataset.i18n); });
+      document.title = window.i18n.t(locale, "title");
+    }
+    window.i18n.languages.forEach(({ code, label }) => language.add(new Option(label, code)));
+    language.value = "en";
+    language.addEventListener("change", () => {
+      const values = rowsToValues();
+      permitList.replaceChildren(); absenceList.replaceChildren();
+      translate();
+      values.permits.forEach(permitRow); values.absences.forEach(absenceRow);
+    });
+    translate();
     const today = new Date().toISOString().slice(0, 10);
     $("#as-of").value = today;
     let wasmLoaded = false;
 
     function permitRow(values = {}) {
       const row = document.createElement("div"); row.className = "history-row";
-      row.innerHTML = `<label>Permit type<select class="permit-type"><option value="A">A — continuous</option><option value="B">B — temporary</option><option value="P">P — permanent</option></select></label><label>Start date<input class="permit-start" type="date" required></label><label>End date<input class="permit-end" type="date" required></label><button class="remove" type="button">Remove</button>`;
+      row.innerHTML = `<label>${window.i18n.t(language.value, "permitType")}<select class="permit-type"><option value="A">A — ${window.i18n.t(language.value, "continuous")}</option><option value="B">B — ${window.i18n.t(language.value, "temporary")}</option><option value="P">P — ${window.i18n.t(language.value, "permanent")}</option></select></label><label>${window.i18n.t(language.value, "startDate")}<input class="permit-start" type="date" required></label><label>${window.i18n.t(language.value, "endDate")}<input class="permit-end" type="date" required></label><button class="remove" type="button">${window.i18n.t(language.value, "remove")}</button>`;
       $(".permit-type", row).value = values.type || "A"; $(".permit-start", row).value = values.start || ""; $(".permit-end", row).value = values.end || "";
       $(".remove", row).addEventListener("click", () => row.remove()); permitList.append(row);
     }
     function absenceRow(values = {}) {
       const row = document.createElement("div"); row.className = "history-row absence-row";
-      row.innerHTML = `<label>Departure date<input class="absence-start" type="date" required></label><label>Return date<input class="absence-end" type="date" required></label><button class="remove" type="button">Remove</button>`;
+      row.innerHTML = `<label>${window.i18n.t(language.value, "departure")}<input class="absence-start" type="date" required></label><label>${window.i18n.t(language.value, "return")}<input class="absence-end" type="date" required></label><button class="remove" type="button">${window.i18n.t(language.value, "remove")}</button>`;
       $(".absence-start", row).value = values.start || ""; $(".absence-end", row).value = values.end || "";
       $(".remove", row).addEventListener("click", () => row.remove()); absenceList.append(row);
     }

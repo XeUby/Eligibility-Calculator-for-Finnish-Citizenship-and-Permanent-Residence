@@ -1,6 +1,7 @@
 package calculator
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -74,5 +75,12 @@ func TestCalculateUsesCalendarYearAnniversary(t *testing.T) {
 	}
 	if response.CitizenshipRequiredYears != 5 {
 		t.Fatalf("required years = %d, want 5", response.CitizenshipRequiredYears)
+	}
+}
+
+func TestCalculateWarnsAboutThe2027CitizenshipTest(t *testing.T) {
+	response := Calculate(models.CalculationRequest{AsOf: day("2026-08-26"), CitizenshipRoute: models.CitizenshipLanguage, Permits: []models.Permit{{Type: models.PermitA, StartDate: day("2025-01-01"), EndDate: day("2030-01-01")}}})
+	if !strings.Contains(strings.Join(response.Warnings, " "), "2027-03-01") {
+		t.Fatal("expected citizenship-test warning")
 	}
 }

@@ -19,6 +19,8 @@ const (
 	maxRecentAbsenceDays     = 90
 )
 
+var citizenshipTestApplicationDate = time.Date(2027, time.March, 1, 0, 0, 0, 0, time.UTC)
+
 type dateRange struct{ start, end time.Time }
 
 // Calculate returns an estimate as of request.AsOf. It only assesses the
@@ -53,6 +55,9 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 		} else {
 			response.CitizenshipEarliest = targetDate.Format("2006-01-02")
 			response.Warnings = append(response.Warnings, "The projected citizenship date assumes uninterrupted legal residence and no further absences.")
+		}
+		if !targetDate.Before(citizenshipTestApplicationDate) {
+			response.Warnings = append(response.Warnings, "For citizenship applications submitted on or after 2027-03-01, Migri states that applicants aged 18–64 will need to meet the new civic-knowledge requirement, usually with a citizenship test. Check the official exemptions and alternatives.")
 		}
 	}
 
