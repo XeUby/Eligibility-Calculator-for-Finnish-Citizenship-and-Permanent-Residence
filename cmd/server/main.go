@@ -4,43 +4,41 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/internal/calculator"
 	"github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/internal/models"
 )
 
 func main() {
-	http.HandleFunc("/api/calculate", calculateHandler)
-
-	log.Println("Server is running on port 8080...")
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	log.Printf("API listening on :%s", port)
+	if err := http.ListenAndServe(":"+port, newHandler()); err != nil {
 		log.Fatal(err)
 	}
 }
 
+func newHandler() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusNoContent) })
+	mux.HandleFunc("POST /api/calculate", calculateHandler)
+	return mux
+}
+
 func calculateHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	defer r.Body.Close()
+	var request models.CalculationRequest
+	decoder := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&request); err != nil {
+		http.Error(w, "invalid JSON request", http.StatusBadRequest)
 		return
 	}
-
-	var req models.CalculationRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
-		return
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(calculator.Calculate(request)); err != nil {
+		log.Printf("encode calculation response: %v", err)
 	}
-
-	totalDays := calculator.CalculateResidence(req.Permits)
-	isEligible, message := calculator.CheckEligibility(totalDays)
-
-	response := models.CalculationResponse{
-		TotalDays:    totalDays,
-		IsEligible:   isEligible,
-		RequiredDays: calculator.RequiredDaysForCitizenship,
-		Message:      message,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }

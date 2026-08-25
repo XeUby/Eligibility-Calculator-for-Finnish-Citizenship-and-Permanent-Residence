@@ -7,24 +7,62 @@ import (
 	"github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/internal/models"
 )
 
-func TestCalculateResidence(t *testing.T) {
-	// Подготавливаем тестовые данные (Табличные тесты - это стандарт в Go)
-	layout := "2006-01-02"
-	start1, _ := time.Parse(layout, "2020-01-01")
-	end1, _ := time.Parse(layout, "2021-01-01") // 366 дней (високосный год)
-
-	start2, _ := time.Parse(layout, "2021-01-01")
-	end2, _ := time.Parse(layout, "2022-01-01") // 365 дней
-
-	permits := []models.Permit{
-		{Type: models.PermitA, StartDate: start1, EndDate: end1}, // 366 дней
-		{Type: models.PermitB, StartDate: start2, EndDate: end2}, // 365 / 2 = 182.5 дней
+func day(value string) time.Time {
+	parsed, err := time.Parse("2006-01-02", value)
+	if err != nil {
+		panic(err)
 	}
+	return parsed
+}
 
-	expectedDays := 366.0 + 182.5
-	actualDays := CalculateResidence(permits)
+func TestCalculateCitizenshipCreditsBOnlyBeforeFirstA(t *testing.T) {
+	response := Calculate(models.CalculationRequest{AsOf: day("2026-01-01"), CitizenshipRoute: models.CitizenshipLanguage, Permits: []models.Permit{
+		{Type: models.PermitB, StartDate: day("2020-01-01"), EndDate: day("2020-12-31")},
+		{Type: models.PermitA, StartDate: day("2021-01-01"), EndDate: day("2026-12-31")},
+	}})
+	want := 183 + 1827 // 366 B days at half, then five inclusive A calendar years.
+	if response.CitizenshipDays != want {
+		t.Fatalf("credit = %d, want %d", response.CitizenshipDays, want)
+	}
+}
 
-	if actualDays != expectedDays {
-		t.Errorf("Expected %f days, but got %f", expectedDays, actualDays)
+func TestCalculateResetsAtPermitGap(t *testing.T) {
+	response := Calculate(models.CalculationRequest{AsOf: day("2026-01-01"), CitizenshipRoute: models.CitizenshipLanguage, Permits: []models.Permit{
+		{Type: models.PermitA, StartDate: day("2018-01-01"), EndDate: day("2020-01-01")},
+		{Type: models.PermitA, StartDate: day("2020-01-03"), EndDate: day("2026-12-31")},
+	}})
+	if response.CitizenshipDays != daysInclusive(day("2020-01-03"), day("2026-01-01")) {
+		t.Fatal("permit gap must restart continuous estimate")
+	}
+}
+
+func TestCalculateAppliesAbsencePenalty(t *testing.T) {
+	response := Calculate(models.CalculationRequest{AsOf: day("2026-01-01"), CitizenshipRoute: models.CitizenshipLanguage,
+		Permits:  []models.Permit{{Type: models.PermitA, StartDate: day("2015-01-01"), EndDate: day("2026-12-31")}},
+		Absences: []models.Absence{{StartDate: day("2025-08-20"), EndDate: day("2025-12-31")}},
+	})
+	want := daysInclusive(day("2015-01-01"), day("2026-01-01")) - 42
+	if response.CitizenshipDays != want {
+		t.Fatalf("days = %d, want %d", response.CitizenshipDays, want)
+	}
+}
+
+func TestCalculatePRUsesOnlyAOrPAndRequiresConditions(t *testing.T) {
+	response := Calculate(models.CalculationRequest{AsOf: day("2030-01-02"), PermanentResidence: models.PRHighIncome, Permits: []models.Permit{
+		{Type: models.PermitB, StartDate: day("2020-01-01"), EndDate: day("2024-01-01")},
+		{Type: models.PermitA, StartDate: day("2024-01-02"), EndDate: day("2030-12-31")},
+	}})
+	if response.PermanentResidenceDays != daysInclusive(day("2024-01-02"), day("2030-01-02")) {
+		t.Fatal("B time must not count for PR")
+	}
+	if response.PermanentResidenceEligible {
+		t.Fatal("unconfirmed conditions must prevent a positive status")
+	}
+}
+
+func TestAbsenceRangeExcludesDepartureAndReturnDays(t *testing.T) {
+	r := absenceRange(models.Absence{StartDate: day("2026-01-01"), EndDate: day("2026-01-31")})
+	if got := daysInclusive(r.start, r.end); got != 29 {
+		t.Fatalf("absence days = %d, want 29", got)
 	}
 }
