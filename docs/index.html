@@ -1,198 +1,236 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eligibility Portal 2026</title>
-    <script src="wasm_exec.js"></script>
-    <style>
-        :root {
-            --migri-blue: #003580;
-            --migri-light-blue: #ebf8ff;
-            --migri-green: #2f855a;
-            --migri-light-green: #f0fff4;
-            --text-dark: #2d3748;
-            --border-color: #cbd5e0;
-        }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f4f8; padding: 20px; color: var(--text-dark); line-height: 1.5; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        
-        h1 { color: var(--migri-blue); text-align: center; margin-bottom: 30px; border-bottom: 3px solid var(--migri-blue); padding-bottom: 10px; }
-        h2 { color: var(--migri-blue); margin-top: 40px; border-bottom: 2px solid #edf2f7; padding-bottom: 8px; }
-        
-        /* Calculator Styles */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
-        .box { padding: 20px; border: 1px solid var(--border-color); border-radius: 10px; background: #f8fafc; }
-        h3 { margin-top: 0; color: #1a365d; font-size: 1.1em; margin-bottom: 15px; }
-        label { display: block; font-size: 0.85em; font-weight: bold; margin-top: 12px; }
-        input { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; }
-        
-        button { width: 100%; padding: 18px; background: var(--migri-blue); color: white; border: none; border-radius: 8px; font-size: 1.2em; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #002255; transform: translateY(-1px); }
-
-        /* Results */
-        .result-section { margin-top: 30px; padding: 25px; border-radius: 10px; border: 1px solid var(--border-color); }
-        .cit-bg { background: var(--migri-light-blue); border-left: 6px solid #3182ce; }
-        .pr-bg { background: var(--migri-light-green); border-left: 6px solid #38a169; margin-top: 20px; }
-        .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border-color); }
-        .val { font-weight: bold; color: var(--migri-blue); }
-
-        /* Detailed Info Sections */
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; }
-        .info-card { background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .info-card h4 { margin: 0 0 12px 0; color: var(--migri-blue); font-size: 1.1em; border-bottom: 2px solid #f0f4f8; padding-bottom: 5px; }
-        .info-card ul { padding-left: 18px; margin: 0; font-size: 0.92em; }
-        .info-card li { margin-bottom: 8px; }
-        
-        .status-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; }
-        .tag-cit { background: #bee3f8; color: #2c5282; }
-        .tag-pr { background: #c6f6d5; color: #22543d; }
-        
-        .price-badge { background: #edf2f7; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #cbd5e0; }
-        .disclaimer { font-size: 0.8em; color: #a0aec0; margin-top: 40px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
-        a { color: #3182ce; text-decoration: none; font-weight: bold; }
-        a:hover { text-decoration: underline; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A private, browser-based estimate of Finnish citizenship and permanent residence time requirements.">
+  <title>Finland eligibility estimator</title>
+  <script src="wasm_exec.js"></script>
+  <style>
+    :root { --ink:#13233d; --muted:#56657a; --line:#d8e1ec; --canvas:#f5f8fc; --surface:#fff; --blue:#0858bd; --blue-dark:#034190; --teal:#006b62; --teal-bg:#e6f5f1; --amber:#8a4b00; --amber-bg:#fff3db; --red:#a3262a; --radius:16px; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--canvas); line-height:1.5; }
+    a { color:var(--blue); }
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid #ffbf47; outline-offset:2px; }
+    .wrap { width:min(1100px, calc(100% - 32px)); margin:auto; }
+    header { color:#fff; background:linear-gradient(125deg,#063879,#08729b); padding:42px 0 36px; }
+    header p { max-width:730px; margin:9px 0 0; color:#dcefff; }
+    h1 { margin:0; font-size:clamp(2rem,5vw,3.25rem); letter-spacing:-.04em; }
+    h2 { font-size:1.45rem; letter-spacing:-.02em; margin:0; }
+    h3 { font-size:1.05rem; margin:0 0 6px; }
+    main { padding:26px 0 52px; }
+    .notice { margin:0 0 22px; padding:16px 18px; border-left:5px solid #d88500; background:var(--amber-bg); color:#5c3805; border-radius:8px; }
+    .notice strong { display:block; }
+    .panel { padding:24px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 3px 10px #17335b0d; margin:18px 0; }
+    .section-head { display:flex; align-items:start; justify-content:space-between; gap:16px; margin-bottom:18px; }
+    .section-head p, .help, .field-help { margin:3px 0 0; color:var(--muted); font-size:.94rem; }
+    .history { display:grid; gap:10px; }
+    .history-row { display:grid; grid-template-columns:minmax(105px,.7fr) 1fr 1fr auto; align-items:end; gap:12px; padding:14px; background:#f8fbff; border:1px solid var(--line); border-radius:11px; }
+    .absence-row { grid-template-columns:1fr 1fr auto; }
+    label { display:grid; gap:5px; font-weight:650; font-size:.89rem; }
+    input, select { min-width:0; padding:10px 11px; border:1px solid #9aabba; border-radius:8px; color:var(--ink); background:#fff; font:inherit; }
+    input[type="checkbox"] { width:19px; height:19px; accent-color:var(--blue); }
+    .check { grid-template-columns:auto 1fr; align-items:start; font-weight:500; font-size:.94rem; }
+    button { font:inherit; font-weight:700; border-radius:9px; border:1px solid transparent; cursor:pointer; padding:11px 15px; }
+    .primary { width:100%; margin-top:22px; padding:14px; color:#fff; background:var(--blue); font-size:1.05rem; }
+    .primary:hover { background:var(--blue-dark); }
+    .secondary { color:var(--blue); background:#fff; border-color:#8dafd9; }
+    .secondary:hover { background:#edf5ff; }
+    .remove { color:var(--red); background:#fff; border-color:#ebb4b5; padding:10px 12px; }
+    .remove:hover { background:#fff3f3; }
+    .choices { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
+    .choices > div { display:grid; gap:8px; }
+    .form-error { min-height:1.5em; margin:14px 0 0; color:var(--red); font-weight:650; }
+    .results[hidden] { display:none; }
+    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .result { padding:21px; border:1px solid var(--line); border-radius:13px; }
+    .result.citizenship { border-top:6px solid var(--blue); }
+    .result.pr { border-top:6px solid var(--teal); }
+    .eyebrow { margin:0 0 8px; color:var(--muted); font-size:.83rem; font-weight:750; letter-spacing:.06em; text-transform:uppercase; }
+    .status { display:inline-block; margin:0 0 18px; padding:5px 9px; border-radius:100px; font-weight:750; font-size:.88rem; }
+    .status.good { color:#075c41; background:#dcf6ec; } .status.wait { color:#694000; background:#fff0cf; }
+    .metric { display:flex; justify-content:space-between; gap:18px; padding:9px 0; border-top:1px solid var(--line); }
+    .metric span { color:var(--muted); } .metric strong { text-align:right; }
+    .warnings { margin:18px 0 0; padding:16px 20px 16px 38px; background:#fff7e5; border-radius:10px; color:#573900; }
+    .resources { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .resource { padding:18px; background:#f8fbff; border:1px solid var(--line); border-radius:12px; }
+    footer { padding:27px 0 40px; color:var(--muted); font-size:.9rem; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media (max-width:720px) { .history-row,.absence-row,.choices,.result-grid,.resources { grid-template-columns:1fr; } .history-row { align-items:stretch; } .remove { width:100%; } .section-head { display:block; } .section-head button { margin-top:12px; } .panel { padding:18px; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Eligibility Portal</h1>
-        
-        <div class="grid">
-            <div class="box">
-                <h3>B-permit Period (Studies)</h3>
-                <label>Start Date</label>
-                <input type="date" id="b_start" value="2021-08-13">
-                <label>End Date</label>
-                <input type="date" id="b_end" value="2022-07-31">
-            </div>
-            <div class="box">
-                <h3>A-permit Period (Work/Family)</h3>
-                <label>Start Date</label>
-                <input type="date" id="a_start" value="2022-08-02">
-                <label>Today's Date</label>
-                <input type="date" id="a_end" value="2026-03-17">
-            </div>
-        </div>
-
-        <div class="box" style="margin-bottom: 25px;">
-            <h3>Absence Tracking</h3>
-            <div class="grid" style="margin-bottom:0; gap: 40px;">
-                <div>
-                    <label>Total days abroad (Last 5 years)</label>
-                    <input type="number" id="abroad_total" value="300">
-                </div>
-                <div>
-                    <label>Days abroad in last 12 months</label>
-                    <input type="number" id="abroad_12m" value="39">
-                </div>
-            </div>
-        </div>
-
-        <button onclick="run()">RUN ELIGIBILITY CHECK</button>
-
-        <div id="results" style="display:none;">
-            <div class="result-section cit-bg">
-                <h3>🇫🇮 Path to Finnish Citizenship</h3>
-                <div class="row"><span>Accumulated Credit (Years)</span> <span class="val" id="r_cit_years">0</span></div>
-                <div class="row"><span>B-type (50%) + A-type (100%)</span> <span class="val" id="r_cit_days">0 days</span></div>
-                <div class="row"><span>Absence Limits (365d / 90d)</span> <span class="val" id="r_status">Checking...</span></div>
-                <div class="row" style="background: white; padding: 12px; margin-top: 10px; border-radius: 6px;">
-                    <span style="font-weight:bold;">Earliest Application Date:</span> 
-                    <span class="val" id="r_cit_date" style="font-size: 1.2em;">---</span>
-                </div>
-            </div>
-
-            <div class="result-section pr-bg">
-                <h3>🏡 Path to Permanent Residence (PR)</h3>
-                <div class="row"><span>Required A-permit Time</span> <span class="val">4.0 Years</span></div>
-                <div class="row"><span>Earliest PR Application Date:</span> <span class="val" id="r_pr_date">---</span></div>
-            </div>
-        </div>
-
-        <h2>Application Requirements (March 2026)</h2>
-        
-        <div class="info-grid">
-            <div class="info-card">
-                <h4><span class="status-tag tag-cit">Citizenship</span> Requirements</h4>
-                <ul>
-                    <li><b>Period of Residence:</b> 5 years of continuous residence (with language skills) or 8 years (new law standard).</li>
-                    <li><b>Language Skills:</b> Satisfactory skills in Finnish or Swedish. Most common: <b>YKI test</b> (level 3/4).</li>
-                    <li><b>Integrity:</b> No criminal record, no restraining orders, and no unpaid taxes, fines, or maintenance payments.</li>
-                    <li><b>Means of Support:</b> You must provide a reliable report on your source of income.</li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h4><span class="status-tag tag-pr">PR</span> Requirements</h4>
-                <ul>
-                    <li><b>Period of Residence:</b> 4 years of continuous residence with an <b>A-permit</b>.</li>
-                    <li><b>Continuous Permit:</b> Your current permit must be a continuous (A) permit.</li>
-                    <li><b>Income:</b> You must have sufficient income (salary, business income, or social benefits in some cases).</li>
-                    <li><b>Automatic:</b> PR does not expire as long as you stay in Finland, but the card must be renewed every 5 years.</li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h4>💳 Fees & Processing (2026)</h4>
-                <ul>
-                    <li><b>Citizenship Application:</b> <span class="price-badge">€460</span> (Electronic) / <span class="price-badge">€690</span> (Paper).</li>
-                    <li><b>Permanent Residence:</b> <span class="price-badge">€160</span> (Electronic) / <span class="price-badge">€430</span> (Paper).</li>
-                    <li><b>YKI Language Test:</b> Approximately <span class="price-badge">€176</span>.</li>
-                    <li><b>Processing Time:</b> 6–18 months depending on queue.</li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h4>🔗 Official Resources</h4>
-                <ul>
-                    <li><a href="https://migri.fi/en/citizenship-for-adults" target="_blank">Migri: Citizenship for Adults</a></li>
-                    <li><a href="https://migri.fi/en/permanent-residence-permit" target="_blank">Migri: PR Guidelines</a></li>
-                    <li><a href="https://www.oph.fi/fi" target="_blank">OPH: YKI Test Info</a></li>
-                    <li><a href="https://enterfinland.fi" target="_blank">Enter Finland E-service</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="info-card" style="margin-top: 25px; background: #fffaf0;">
-            <h4>⚠️ Important: Changes in Legislation</h4>
-            <p style="font-size: 0.9em; margin: 0;">As of 2025-2026, the Finnish government has tightened the Citizenship Act. The required period for citizenship may be extended to <b>8 years</b> for those without proven language skills or specific integration status. This calculator follows the 5-year model (standard for students-to-workers with YKI).</p>
-        </div>
-
-        <p class="disclaimer">
-            This calculator is an educational tool. For legal decisions, always refer to the official 
-            <a href="https://migri.fi" target="_blank">Finnish Immigration Service (Migri)</a>.
-        </p>
+  <header>
+    <div class="wrap">
+      <h1>Finland eligibility estimator</h1>
+      <p>Estimate the residence-time part of Finnish citizenship and permanent-residence applications. Calculations run privately in this browser; no data is sent or stored.</p>
     </div>
+  </header>
+  <main class="wrap">
+    <aside class="notice" aria-label="Important legal notice">
+      <strong>Not legal advice or an application decision.</strong>
+      This tool covers selected residence-time rules only. Migri decides every application and can assess facts this site cannot verify.
+    </aside>
 
-    <script>
-        const go = new Go();
-        WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
-            go.run(result.instance);
-        });
+    <form id="calculator" novalidate>
+      <section class="panel" aria-labelledby="residence-heading">
+        <div class="section-head">
+          <div><h2 id="residence-heading">1. Residence-permit history</h2><p>Add every uninterrupted permit period relevant to your calculation.</p></div>
+          <button class="secondary" type="button" id="add-permit">Add permit period</button>
+        </div>
+        <div id="permit-list" class="history"></div>
+        <p class="help">A = continuous permit, B = temporary permit, P = permanent permit. Permit end dates are included.</p>
+      </section>
 
-        function run() {
-            const permits = [];
-            const b_s = document.getElementById('b_start').value;
-            const b_e = document.getElementById('b_end').value;
-            const a_s = document.getElementById('a_start').value;
-            const a_e = document.getElementById('a_end').value;
+      <section class="panel" aria-labelledby="absence-heading">
+        <div class="section-head">
+          <div><h2 id="absence-heading">2. Trips outside Finland</h2><p>Optional, but add trips during the period you want assessed.</p></div>
+          <button class="secondary" type="button" id="add-absence">Add trip</button>
+        </div>
+        <div id="absence-list" class="history"></div>
+        <p class="help">The day you leave Finland and the day you return count as residence days, following Migri’s published guidance.</p>
+      </section>
 
-            if(b_s && b_e) permits.push({type: "B", start: b_s, end: b_e});
-            if(a_s && a_e) permits.push({type: "A", start: a_s, end: a_e});
+      <section class="panel" aria-labelledby="route-heading">
+        <h2 id="route-heading">3. Choose the routes to estimate</h2>
+        <div class="choices">
+          <div>
+            <label for="citizenship-route">Citizenship route</label>
+            <select id="citizenship-route">
+              <option value="standard">Standard route — 8 years</option>
+              <option value="language">Language route — 5 years</option>
+            </select>
+            <p class="field-help">The 5-year route requires the statutory language qualification. Special routes are not modelled.</p>
+          </div>
+          <div>
+            <label for="pr-path">Permanent residence path</label>
+            <select id="pr-path">
+              <option value="six_years">6 years + B1 language + 2 years’ work</option>
+              <option value="high_income">4 years + annual income over €40,000</option>
+              <option value="foreign_degree">4 years + recognised higher degree + 2 years’ work</option>
+              <option value="excellent_language">4 years + C1 language + 3 years’ work</option>
+            </select>
+            <p class="field-help">These paths apply to applications submitted on or after 8 January 2026.</p>
+          </div>
+          <div>
+            <label for="as-of">Calculate as of</label>
+            <input id="as-of" type="date" required>
+          </div>
+          <div>
+            <span class="sr-only">Condition confirmation</span>
+            <label class="check"><input id="conditions-met" type="checkbox"><span>I confirm that I meet the additional conditions shown for my chosen permanent-residence path.</span></label>
+          </div>
+        </div>
+        <p id="form-error" class="form-error" role="alert" aria-live="assertive"></p>
+        <button class="primary" type="submit">Calculate my estimate</button>
+      </section>
+    </form>
 
-            const ab_total = parseInt(document.getElementById('abroad_total').value) || 0;
-            const ab_12m = parseInt(document.getElementById('abroad_12m').value) || 0;
+    <section id="results" class="panel results" hidden aria-live="polite" aria-labelledby="results-heading">
+      <h2 id="results-heading">Your estimate</h2>
+      <p class="help">“Meets residence time” is not a decision or a recommendation to apply.</p>
+      <div class="result-grid">
+        <article class="result citizenship">
+          <p class="eyebrow">Finnish citizenship</p>
+          <p id="citizenship-status" class="status wait">—</p>
+          <div class="metric"><span>Credited residence time</span><strong id="citizenship-days">—</strong></div>
+          <div class="metric"><span>Route requirement</span><strong id="citizenship-required">—</strong></div>
+          <div class="metric"><span>Optimistic date</span><strong id="citizenship-date">—</strong></div>
+        </article>
+        <article class="result pr">
+          <p class="eyebrow">Permanent residence</p>
+          <p id="pr-status" class="status wait">—</p>
+          <div class="metric"><span>Continuous A/P residence</span><strong id="pr-days">—</strong></div>
+          <div class="metric"><span>Path requirement</span><strong id="pr-required">—</strong></div>
+          <div class="metric"><span>Optimistic date</span><strong id="pr-date">—</strong></div>
+        </article>
+      </div>
+      <ul id="warnings" class="warnings"></ul>
+    </section>
 
-            const res = calculateEligibility(permits, ab_total, ab_12m);
+    <section class="panel" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">Official information</h2>
+      <p class="help">Rules and fees can change. Last reviewed: 26 August 2026.</p>
+      <div class="resources">
+        <article class="resource"><h3>Citizenship</h3><p><a href="https://migri.fi/en/citizenship-for-adults" target="_blank" rel="noopener noreferrer">Citizenship application for adults</a></p><p><a href="https://migri.fi/en/how-to-calculate-the-period-of-residence" target="_blank" rel="noopener noreferrer">How Migri calculates residence</a></p></article>
+        <article class="resource"><h3>Permanent residence</h3><p><a href="https://migri.fi/en/permanent-residence-permit" target="_blank" rel="noopener noreferrer">Permanent residence permit paths</a></p><p><a href="https://migri.fi/en/period-of-residence-requirement" target="_blank" rel="noopener noreferrer">Residence-period requirements</a></p></article>
+        <article class="resource"><h3>Apply and verify</h3><p><a href="https://enterfinland.fi" target="_blank" rel="noopener noreferrer">Enter Finland</a></p><p><a href="https://migri.fi/en/processing-fees-and-payment-methods" target="_blank" rel="noopener noreferrer">Current processing fees</a></p></article>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap">Open-source educational tool. It does not collect personal data.</footer>
 
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('r_cit_days').innerText = Math.round(res.cit_days) + " days";
-            document.getElementById('r_cit_years').innerText = (res.cit_days / 365).toFixed(2);
-            document.getElementById('r_status').innerText = res.status_reason.split(".")[0];
-            document.getElementById('r_cit_date').innerText = res.cit_apply_date;
-            document.getElementById('r_pr_date').innerText = res.pr_apply_date;
-        }
-    </script>
+  <script>
+    const $ = (selector, parent = document) => parent.querySelector(selector);
+    const permitList = $("#permit-list"), absenceList = $("#absence-list");
+    const today = new Date().toISOString().slice(0, 10);
+    $("#as-of").value = today;
+    let wasmLoaded = false;
+
+    function permitRow(values = {}) {
+      const row = document.createElement("div"); row.className = "history-row";
+      row.innerHTML = `<label>Permit type<select class="permit-type"><option value="A">A — continuous</option><option value="B">B — temporary</option><option value="P">P — permanent</option></select></label><label>Start date<input class="permit-start" type="date" required></label><label>End date<input class="permit-end" type="date" required></label><button class="remove" type="button">Remove</button>`;
+      $(".permit-type", row).value = values.type || "A"; $(".permit-start", row).value = values.start || ""; $(".permit-end", row).value = values.end || "";
+      $(".remove", row).addEventListener("click", () => row.remove()); permitList.append(row);
+    }
+    function absenceRow(values = {}) {
+      const row = document.createElement("div"); row.className = "history-row absence-row";
+      row.innerHTML = `<label>Departure date<input class="absence-start" type="date" required></label><label>Return date<input class="absence-end" type="date" required></label><button class="remove" type="button">Remove</button>`;
+      $(".absence-start", row).value = values.start || ""; $(".absence-end", row).value = values.end || "";
+      $(".remove", row).addEventListener("click", () => row.remove()); absenceList.append(row);
+    }
+    $("#add-permit").addEventListener("click", () => permitRow());
+    $("#add-absence").addEventListener("click", () => absenceRow());
+    permitRow();
+
+    async function loadWasm() {
+      if (wasmLoaded) return;
+      const go = new Go();
+      let instance;
+      try { instance = await WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject); }
+      catch (_) { const response = await fetch("main.wasm"); instance = await WebAssembly.instantiate(await response.arrayBuffer(), go.importObject); }
+      go.run(instance.instance);
+      for (let attempt = 0; attempt < 40 && typeof window.calculateEligibility !== "function"; attempt++) await new Promise(resolve => setTimeout(resolve, 50));
+      if (typeof window.calculateEligibility !== "function") throw new Error("The calculator did not finish loading.");
+      wasmLoaded = true;
+    }
+
+    function rowsToValues() {
+      const permits = [...document.querySelectorAll(".history-row:not(.absence-row)")].map(row => ({ type: $(".permit-type", row).value, start: $(".permit-start", row).value, end: $(".permit-end", row).value }));
+      const absences = [...document.querySelectorAll(".absence-row")].map(row => ({ start: $(".absence-start", row).value, end: $(".absence-end", row).value }));
+      return { permits, absences };
+    }
+    function validate({ permits, absences }) {
+      if (!permits.length) return "Add at least one residence-permit period.";
+      for (const row of permits) { if (!row.start || !row.end) return "Enter both dates for every permit period."; if (row.end < row.start) return "A permit end date cannot be before its start date."; }
+      for (const row of absences) { if (!row.start || !row.end) return "Enter both dates for every trip, or remove the empty row."; if (row.end < row.start) return "A return date cannot be before the departure date."; }
+      return "";
+    }
+    function setResult(prefix, eligible, days, requiredYears, date) {
+      const status = $("#" + prefix + "-status");
+      status.textContent = eligible ? "Meets residence time" : "More time or conditions needed";
+      status.className = "status " + (eligible ? "good" : "wait");
+      $("#" + prefix + "-days").textContent = days.toLocaleString() + " days";
+      $("#" + prefix + "-required").textContent = requiredYears + " calendar years";
+      $("#" + prefix + "-date").textContent = date || "—";
+    }
+    $("#calculator").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const values = rowsToValues(), error = validate(values);
+      $("#form-error").textContent = error;
+      if (error) return;
+      const submit = $(".primary"); submit.disabled = true; submit.textContent = "Calculating…";
+      try {
+        await loadWasm();
+        const result = window.calculateEligibility(values.permits, values.absences, $("#as-of").value, $("#citizenship-route").value, $("#pr-path").value, $("#conditions-met").checked);
+        if (result.error) throw new Error(result.error);
+        setResult("citizenship", result.citizenshipEligible, result.citizenshipDays, result.citizenshipRequiredYears, result.citizenshipEarliest);
+        setResult("pr", result.prEligible, result.prDays, result.prRequiredYears, result.prEarliest);
+        const warnings = $("#warnings"); warnings.replaceChildren(...result.warnings.map(text => { const item = document.createElement("li"); item.textContent = text; return item; }));
+        $("#results").hidden = false; $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (failure) { $("#form-error").textContent = failure.message || "Could not load the calculator. Please refresh and try again."; }
+      finally { submit.disabled = false; submit.textContent = "Calculate my estimate"; }
+    });
+  </script>
 </body>
 </html>

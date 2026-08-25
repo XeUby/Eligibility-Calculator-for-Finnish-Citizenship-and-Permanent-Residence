@@ -26,9 +26,9 @@ func calculateEligibility(_ js.Value, args []js.Value) any {
 	}
 	result := calculator.Calculate(request)
 	return map[string]any{
-		"citizenshipDays": result.CitizenshipDays, "citizenshipRequired": result.CitizenshipRequired,
+		"citizenshipDays": result.CitizenshipDays, "citizenshipRequiredYears": result.CitizenshipRequiredYears,
 		"citizenshipEligible": result.CitizenshipEligible, "citizenshipEarliest": result.CitizenshipEarliest,
-		"prDays": result.PermanentResidenceDays, "prRequired": result.PermanentResidenceRequired,
+		"prDays": result.PermanentResidenceDays, "prRequiredYears": result.PermanentResidenceRequiredYears,
 		"prEligible": result.PermanentResidenceEligible, "prEarliest": result.PermanentResidenceEarliest,
 		"warnings": toJSArray(result.Warnings),
 	}

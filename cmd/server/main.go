@@ -25,6 +25,9 @@ func newHandler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusNoContent) })
 	mux.HandleFunc("POST /api/calculate", calculateHandler)
+	// This makes local development a single-command experience. Production is a
+	// static GitHub Pages site and does not expose this optional API server.
+	mux.Handle("GET /", http.FileServer(http.Dir("docs")))
 	return mux
 }
 

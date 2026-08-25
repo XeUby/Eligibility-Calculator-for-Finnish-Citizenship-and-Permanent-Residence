@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	CitizenshipStandardDays = 8 * 365
-	CitizenshipLanguageDays = 5 * 365
-	PRSixYearsDays          = 6 * 365
-	PRFourYearsDays         = 4 * 365
-	maxAbsenceDays          = 365
-	maxRecentAbsenceDays    = 90
+	CitizenshipStandardYears = 8
+	CitizenshipLanguageYears = 5
+	PRSixYears               = 6
+	PRFourYears              = 4
+	maxAbsenceDays           = 365
+	maxRecentAbsenceDays     = 90
 )
 
 type dateRange struct{ start, end time.Time }
@@ -29,7 +29,7 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 		asOf = dateOnly(time.Now())
 	}
 	response := models.CalculationResponse{Warnings: []string{}}
-	response.CitizenshipRequired = citizenshipRequirement(request.CitizenshipRoute)
+	response.CitizenshipRequiredYears = citizenshipRequirement(request.CitizenshipRoute)
 
 	span, found := latestContinuousSpan(request.Permits, asOf, validPermitType)
 	if !found {
@@ -39,20 +39,25 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 	if !hasCurrentContinuousPermit(request.Permits, asOf) {
 		response.Warnings = append(response.Warnings, "A valid A or P permit is required for the common citizenship route.")
 	}
-	creditStart, days := citizenshipCredit(request.Permits, span)
+	creditStart, firstA, bCredit, days := citizenshipCredit(request.Permits, span)
 	penalty, absenceWarnings := absenceAdjustment(request.Absences, creditStart, asOf)
 	response.Warnings = append(response.Warnings, absenceWarnings...)
 	response.CitizenshipDays = max(0, days-penalty)
-	response.CitizenshipEligible = response.CitizenshipDays >= response.CitizenshipRequired && hasCurrentContinuousPermit(request.Permits, asOf)
-	if response.CitizenshipEligible {
-		response.CitizenshipEarliest = asOf.Format("2006-01-02")
+	if firstA.IsZero() {
+		response.Warnings = append(response.Warnings, "Add an A or P permit period to estimate a citizenship application date.")
 	} else {
-		response.CitizenshipEarliest = asOf.AddDate(0, 0, response.CitizenshipRequired-response.CitizenshipDays).Format("2006-01-02")
-		response.Warnings = append(response.Warnings, "The projected citizenship date assumes uninterrupted legal residence and no further absences.")
+		targetDate := firstA.AddDate(response.CitizenshipRequiredYears, 0, -bCredit+penalty)
+		response.CitizenshipEligible = !asOf.Before(targetDate) && hasCurrentContinuousPermit(request.Permits, asOf)
+		if response.CitizenshipEligible {
+			response.CitizenshipEarliest = asOf.Format("2006-01-02")
+		} else {
+			response.CitizenshipEarliest = targetDate.Format("2006-01-02")
+			response.Warnings = append(response.Warnings, "The projected citizenship date assumes uninterrupted legal residence and no further absences.")
+		}
 	}
 
 	prRequired, prWarning := prRequirement(request.PermanentResidence)
-	response.PermanentResidenceRequired = prRequired
+	response.PermanentResidenceRequiredYears = prRequired
 	if prWarning != "" {
 		response.Warnings = append(response.Warnings, prWarning)
 	}
@@ -62,11 +67,12 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 		return response
 	}
 	response.PermanentResidenceDays = daysInclusive(aSpan.start, asOf)
-	response.PermanentResidenceEligible = response.PermanentResidenceDays >= prRequired && request.ConditionsMet
-	if response.PermanentResidenceDays >= prRequired {
+	prTargetDate := aSpan.start.AddDate(prRequired, 0, 0)
+	response.PermanentResidenceEligible = !asOf.Before(prTargetDate) && request.ConditionsMet
+	if !asOf.Before(prTargetDate) {
 		response.PermanentResidenceEarliest = asOf.Format("2006-01-02")
 	} else {
-		response.PermanentResidenceEarliest = asOf.AddDate(0, 0, prRequired-response.PermanentResidenceDays).Format("2006-01-02")
+		response.PermanentResidenceEarliest = prTargetDate.Format("2006-01-02")
 		response.Warnings = append(response.Warnings, "The projected permanent-residence date assumes the selected A/P permit remains uninterrupted.")
 	}
 	if !request.ConditionsMet {
@@ -77,23 +83,23 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 
 func citizenshipRequirement(route models.CitizenshipRoute) int {
 	if route == models.CitizenshipLanguage {
-		return CitizenshipLanguageDays
+		return CitizenshipLanguageYears
 	}
-	return CitizenshipStandardDays
+	return CitizenshipStandardYears
 }
 
 func prRequirement(path models.PRPath) (int, string) {
 	switch path {
 	case models.PRHighIncome, models.PRForeignDegree, models.PRExcellentLanguage:
-		return PRFourYearsDays, "The selected 4-year permanent-residence path has additional statutory conditions; verify them with Migri."
+		return PRFourYears, "The selected 4-year permanent-residence path has additional statutory conditions; verify them with Migri."
 	case models.PRSixYears:
-		return PRSixYearsDays, "The 6-year permanent-residence path requires B1 Finnish/Swedish and two years of work history (with the statutory age exception)."
+		return PRSixYears, "The 6-year permanent-residence path requires B1 Finnish/Swedish and two years of work history (with the statutory age exception)."
 	default:
-		return PRSixYearsDays, "Select a permanent-residence application path before relying on this estimate."
+		return PRSixYears, "Select a permanent-residence application path before relying on this estimate."
 	}
 }
 
-func citizenshipCredit(permits []models.Permit, span dateRange) (time.Time, int) {
+func citizenshipCredit(permits []models.Permit, span dateRange) (time.Time, time.Time, int, int) {
 	firstA := time.Time{}
 	for _, permit := range permits {
 		if (permit.Type == models.PermitA || permit.Type == models.PermitP) && overlaps(permitRange(permit), span) {
@@ -104,19 +110,20 @@ func citizenshipCredit(permits []models.Permit, span dateRange) (time.Time, int)
 		}
 	}
 	if firstA.IsZero() {
-		return span.start, 0
+		return span.start, time.Time{}, 0, 0
 	}
-	creditHalfDays := 0
+	creditHalfDays, bDays := 0, 0
 	for d := span.start; !d.After(span.end); d = d.AddDate(0, 0, 1) {
 		types := permitTypesOn(permits, d)
 		if d.Before(firstA) && types[models.PermitB] {
 			creditHalfDays++
+			bDays++
 		}
 		if types[models.PermitA] || types[models.PermitP] {
 			creditHalfDays += 2
 		}
 	}
-	return span.start, creditHalfDays / 2
+	return span.start, firstA, bDays / 2, creditHalfDays / 2
 }
 
 func absenceAdjustment(absences []models.Absence, start, asOf time.Time) (int, []string) {

@@ -66,3 +66,13 @@ func TestAbsenceRangeExcludesDepartureAndReturnDays(t *testing.T) {
 		t.Fatalf("absence days = %d, want 29", got)
 	}
 }
+
+func TestCalculateUsesCalendarYearAnniversary(t *testing.T) {
+	response := Calculate(models.CalculationRequest{AsOf: day("2025-01-01"), CitizenshipRoute: models.CitizenshipLanguage, Permits: []models.Permit{{Type: models.PermitA, StartDate: day("2020-01-01"), EndDate: day("2030-01-01")}}})
+	if !response.CitizenshipEligible {
+		t.Fatal("five calendar years of A residence should meet the language route")
+	}
+	if response.CitizenshipRequiredYears != 5 {
+		t.Fatalf("required years = %d, want 5", response.CitizenshipRequiredYears)
+	}
+}

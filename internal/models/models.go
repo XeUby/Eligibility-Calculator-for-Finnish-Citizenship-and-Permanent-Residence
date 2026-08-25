@@ -53,13 +53,13 @@ type CalculationRequest struct {
 // CalculationResponse assesses only residence-time conditions, never the full
 // legal eligibility for an immigration application.
 type CalculationResponse struct {
-	CitizenshipDays            int      `json:"citizenship_days"`
-	CitizenshipRequired        int      `json:"citizenship_required_days"`
-	CitizenshipEligible        bool     `json:"citizenship_residence_met"`
-	CitizenshipEarliest        string   `json:"citizenship_earliest_date,omitempty"`
-	PermanentResidenceDays     int      `json:"permanent_residence_days"`
-	PermanentResidenceRequired int      `json:"permanent_residence_required_days"`
-	PermanentResidenceEligible bool     `json:"permanent_residence_residence_met"`
-	PermanentResidenceEarliest string   `json:"permanent_residence_earliest_date,omitempty"`
-	Warnings                   []string `json:"warnings"`
+	CitizenshipDays                 int      `json:"citizenship_days"`
+	CitizenshipRequiredYears        int      `json:"citizenship_required_years"`
+	CitizenshipEligible             bool     `json:"citizenship_residence_met"`
+	CitizenshipEarliest             string   `json:"citizenship_earliest_date,omitempty"`
+	PermanentResidenceDays          int      `json:"permanent_residence_days"`
+	PermanentResidenceRequiredYears int      `json:"permanent_residence_required_years"`
+	PermanentResidenceEligible      bool     `json:"permanent_residence_residence_met"`
+	PermanentResidenceEarliest      string   `json:"permanent_residence_earliest_date,omitempty"`
+	Warnings                        []string `json:"warnings"`
 }
