@@ -27,7 +27,7 @@ window.i18n = (() => {
     hi:{skipToContent:"कैलकुलेटर पर जाएँ",languageLabel:"भाषा",warnings:{no_permit_span:"चुनी गई तारीख तक पहुँचने वाली कोई निरंतर वैध अनुमति अवधि नहीं है।",citizenship_requires_ap:"नागरिकता के सामान्य मार्ग के लिए वैध A या P अनुमति आवश्यक है।",absence_limits:"दर्ज अनुपस्थिति Migri की सीमा से अधिक है, इसलिए अनुमान कुछ दिनों को निकालता है।",citizenship_needs_ap:"नागरिकता आवेदन तिथि का अनुमान लगाने के लिए A या P अनुमति अवधि जोड़ें।",citizenship_projection:"अनुमानित नागरिकता तिथि निर्बाध कानूनी निवास और आगे कोई अनुपस्थिति न होने को मानती है।",citizenship_civic_knowledge:"1 मार्च 2027 से 18–64 वर्ष के आवेदकों को नागरिक ज्ञान की आवश्यकता पूरी करनी होगी। Migri के विकल्प और छूट देखें।",pr_path_conditions:"चुने गए 4-वर्षीय मार्ग में अतिरिक्त वैधानिक शर्तें हैं; उन्हें Migri से सत्यापित करें।",pr_six_requirements:"6-वर्षीय मार्ग के लिए B1 फिनिश/स्वीडिश और दो वर्ष का कार्य इतिहास आवश्यक है, वैधानिक आयु अपवाद के साथ।",pr_unknown_path:"अनुमान पर निर्भर होने से पहले स्थायी निवास आवेदन मार्ग चुनें।",no_pr_ap_span:"स्थायी निवास के लिए चुनी गई तारीख तक पहुँचने वाली कोई निरंतर A या P अनुमति अवधि नहीं है।",pr_projection:"अनुमानित स्थायी निवास तिथि मानती है कि चुनी हुई A/P अनुमति बिना रुकावट जारी रहेगी।",pr_conditions_unconfirmed:"आपने चुने गए मार्ग की अतिरिक्त शर्तों की पुष्टि नहीं की है।"}}
   };
   Object.assign(auxiliary.ne, {
-    residenceIntro:"तपाईंको गणनासँग सम्बन्धित सबै अविच्छिन्न अनुमति अवधिहरू थप्नुहोस्।",
+    residenceIntro:"तपाईंको गणनासँग सम्बन्धित सबै अविच्छिन्न अनुमति अवधिहरू थप्नुहोस्।",tripsIntro:"वैकल्पिक हो, तर मूल्याङ्कन गरिने अवधिका यात्राहरू थप्नुहोस्।",
     permitType:"अनुमतिको प्रकार",continuous:"निरन्तर",temporary:"अस्थायी",permanent:"स्थायी",
     startDate:"सुरु मिति",endDate:"समाप्ति मिति",departure:"प्रस्थान मिति",return:"फर्कने मिति",
     permitHelp:"A = निरन्तर अनुमति, B = अस्थायी अनुमति, P = स्थायी अनुमति। अनुमति समाप्ति मिति समावेश हुन्छ।",
@@ -50,6 +50,27 @@ window.i18n = (() => {
     errPermit:"कम्तीमा एउटा बसोबास-अनुमति अवधि थप्नुहोस्।",errPermitDates:"हरेक अनुमति अवधिका दुवै मिति भर्नुहोस्।",
     errPermitOrder:"अनुमति समाप्ति मिति सुरु मितिभन्दा अघिको हुन सक्दैन।",errTripDates:"हरेक यात्राका दुवै मिति भर्नुहोस् वा खाली पङ्क्ति हटाउनुहोस्।",
     errTripOrder:"फर्कने मिति प्रस्थान मितिभन्दा अघिको हुन सक्दैन।"
+  });
+  Object.assign(auxiliary.fi, {
+    permitHelp:"A = jatkuva lupa, B = tilapäinen lupa, P = pysyvä lupa. Luvan päättymispäivä lasketaan mukaan.",
+    tripHelp:"Suomesta lähtöpäivä ja paluupäivä lasketaan asumispäiviksi Migrin julkaistun ohjeen mukaisesti.",
+    citStandard:"Tavanomainen reitti — 8 vuotta",citLanguage:"Kielireitti — 5 vuotta",
+    citHint:"Viiden vuoden reitti edellyttää laissa säädettyä kielitaitoa. Erityisreittejä ei mallinneta.",
+    prSix:"6 vuotta + B1-kieli + 2 vuotta työhistoriaa",prIncome:"4 vuotta + vuositulot yli 40 000 €",
+    prDegree:"4 vuotta + tunnustettu korkeakoulututkinto + 2 vuotta työhistoriaa",prLanguage:"4 vuotta + C1-kieli + 3 vuotta työhistoriaa",
+    prHint:"Nämä reitit koskevat hakemuksia, jotka on jätetty 8.1.2026 tai sen jälkeen.",
+    conditionLegend:"Ehtojen vahvistus",resultsHelp:"”Asumisaikavaatimus täyttyy” ei ole päätös eikä suositus hakea.",
+    citizenship:"Suomen kansalaisuus",permanentResidence:"Pysyvä oleskelulupa",creditedTime:"Hyväksiluettu asumisaika",
+    routeRequirement:"Reitin vaatimus",pathRequirement:"Reitin vaatimus",optimisticDate:"Arvioitu aikaisin päivä",continuousAP:"Yhtäjaksoinen A/P-oleskelu",
+    reviewed:"Säännöt ja maksut voivat muuttua. Tarkistettu: 26. elokuuta 2026.",
+    citApply:"Aikuisen kansalaisuushakemus",citCalculation:"Miten Migri laskee asumisajan",prPaths:"Pysyvän oleskeluluvan reitit",
+    residenceRequirements:"Asumisajan vaatimukset",applyVerify:"Hae ja tarkista",fees:"Voimassa olevat käsittelymaksut",
+    footer:"Avoimen lähdekoodin opetustyökalu. Se ei kerää henkilötietoja.",
+    statusGood:"Asumisaikavaatimus täyttyy",statusWait:"Tarvitaan lisää aikaa tai ehtoja",days:"päivää",calendarYears:"kalenterivuotta",
+    calculating:"Lasketaan…",loadError:"Laskuria ei voitu ladata. Päivitä sivu ja yritä uudelleen.",
+    errPermit:"Lisää vähintään yksi oleskelulupajakso.",errPermitDates:"Anna molemmat päivämäärät jokaiselle lupajaksolle.",
+    errPermitOrder:"Luvan päättymispäivä ei voi olla alkupäivää aiempi.",errTripDates:"Anna molemmat päivämäärät jokaiselle matkalle tai poista tyhjä rivi.",
+    errTripOrder:"Paluupäivä ei voi olla lähtöpäivää aiempi."
   });
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
   return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
