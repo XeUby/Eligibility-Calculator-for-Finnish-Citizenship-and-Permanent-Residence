@@ -59,6 +59,8 @@ The calculator package is the sole place where date and route logic lives. Both 
 - HTTP integration tests cover health, valid calculations and strict JSON validation.
 - Playwright e2e tests cover calculations, local-only draft storage, client-side validation, all ten translations, source/feedback links and phone-sized layouts.
 - GitHub Actions runs formatting, vet, race-enabled Go tests, WASM build and Chromium tests for every pull request and push to main.
+- CodeQL scans Go code on pull requests, pushes and a weekly schedule. Dependabot opens weekly update pull requests for Go modules, npm and GitHub Actions.
+- A separate weekly link check verifies the published external links on the site and in the rules-review checklist.
 
 ## Production hosting, HTTPS and domain
 
