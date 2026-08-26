@@ -41,16 +41,26 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 	if !hasCurrentContinuousPermit(request.Permits, asOf) {
 		addWarning(&response, "citizenship_requires_ap", "A valid A or P permit is required for the common citizenship route.")
 	}
+	if hasPermitGapBeforeSpan(request.Permits, span, asOf) {
+		addWarning(&response, "permit_gap", "A gap in the permit history means periods before the current uninterrupted span are not counted.")
+	}
 	creditStart, firstA, bCredit, days := citizenshipCredit(request.Permits, span)
-	penalty, absenceWarnings := absenceAdjustment(request.Absences, creditStart, asOf)
-	for _, warning := range absenceWarnings {
+	absences := absenceAdjustment(request.Absences, creditStart, asOf)
+	if absences.merged {
+		addWarning(&response, "overlapping_trips", "Overlapping or duplicate trips were counted only once.")
+	}
+	for _, warning := range absences.warnings {
 		addWarning(&response, "absence_limits", warning)
 	}
-	response.CitizenshipDays = max(0, days-penalty)
+	response.CitizenshipBPermitCreditDays = bCredit
+	response.CitizenshipAPDays = days - bCredit
+	response.CitizenshipAbsenceDays = absences.allDays
+	response.CitizenshipAbsencePenaltyDays = absences.penalty
+	response.CitizenshipDays = max(0, days-absences.penalty)
 	if firstA.IsZero() {
 		addWarning(&response, "citizenship_needs_ap", "Add an A or P permit period to estimate a citizenship application date.")
 	} else {
-		targetDate := firstA.AddDate(response.CitizenshipRequiredYears, 0, -bCredit+penalty)
+		targetDate := firstA.AddDate(response.CitizenshipRequiredYears, 0, -bCredit+absences.penalty)
 		response.CitizenshipEligible = !asOf.Before(targetDate) && hasCurrentContinuousPermit(request.Permits, asOf)
 		if response.CitizenshipEligible {
 			response.CitizenshipEarliest = asOf.Format("2006-01-02")
@@ -94,6 +104,9 @@ func addWarning(response *models.CalculationResponse, code, message string) {
 }
 
 func prWarningCode(path models.PRPath) string {
+	if path == models.PRDegreeFinland {
+		return "pr_finnish_degree_requirements"
+	}
 	if path == models.PRSixYears {
 		return "pr_six_requirements"
 	}
@@ -112,6 +125,8 @@ func citizenshipRequirement(route models.CitizenshipRoute) int {
 
 func prRequirement(path models.PRPath) (int, string) {
 	switch path {
+	case models.PRDegreeFinland:
+		return 0, "The Finnish-degree path has its own degree and developing Finnish/Swedish language requirements; verify them with Migri."
 	case models.PRHighIncome, models.PRForeignDegree, models.PRExcellentLanguage:
 		return PRFourYears, "The selected 4-year permanent-residence path has additional statutory conditions; verify them with Migri."
 	case models.PRSixYears:
@@ -148,25 +163,40 @@ func citizenshipCredit(permits []models.Permit, span dateRange) (time.Time, time
 	return span.start, firstA, bDays / 2, creditHalfDays / 2
 }
 
-func absenceAdjustment(absences []models.Absence, start, asOf time.Time) (int, []string) {
+type absenceSummary struct {
+	allDays  int
+	penalty  int
+	merged   bool
+	warnings []string
+}
+
+func absenceAdjustment(absences []models.Absence, start, asOf time.Time) absenceSummary {
 	if start.IsZero() {
-		return 0, nil
+		return absenceSummary{}
 	}
-	allDays, recentDays := 0, 0
-	recentStart := asOf.AddDate(-1, 0, 1)
+	window := dateRange{start: start, end: asOf}
+	ranges := make([]dateRange, 0, len(absences))
 	for _, absence := range absences {
 		trip := absenceRange(absence)
-		if trip.start.IsZero() || trip.end.Before(trip.start) {
+		if trip.start.IsZero() || trip.end.Before(trip.start) || !overlaps(trip, window) {
 			continue
 		}
-		allDays += daysInIntersection(trip, dateRange{start: start, end: asOf})
+		ranges = append(ranges, dateRange{start: maxDate(trip.start, window.start), end: minDate(trip.end, window.end)})
+	}
+	merged := mergeOverlappingRanges(ranges)
+	allDays, recentDays := 0, 0
+	recentStart := asOf.AddDate(-1, 0, 1)
+	for _, trip := range merged {
+		allDays += daysInclusive(trip.start, trip.end)
 		recentDays += daysInIntersection(trip, dateRange{start: recentStart, end: asOf})
 	}
 	penalty := max(max(0, allDays-maxAbsenceDays), max(0, recentDays-maxRecentAbsenceDays))
+	summary := absenceSummary{allDays: allDays, penalty: penalty, merged: len(merged) < len(ranges)}
 	if penalty == 0 {
-		return 0, nil
+		return summary
 	}
-	return penalty, []string{fmt.Sprintf("Recorded absences exceed the 365-day total or 90-day last-year limit; this estimate excludes at least %d day(s).", penalty)}
+	summary.warnings = []string{fmt.Sprintf("Recorded absences exceed the 365-day total or 90-day last-year limit; this estimate excludes at least %d day(s).", penalty)}
+	return summary
 }
 
 func latestContinuousSpan(permits []models.Permit, asOf time.Time, accept func(models.Permit) bool) (dateRange, bool) {
@@ -187,11 +217,49 @@ func latestContinuousSpan(permits []models.Permit, asOf time.Time, accept func(m
 	if len(ranges) == 0 {
 		return dateRange{}, false
 	}
-	sort.Slice(ranges, func(i, j int) bool { return ranges[i].start.Before(ranges[j].start) })
-	merged := []dateRange{ranges[0]}
-	for _, r := range ranges[1:] {
+	merged := mergeTouchingRanges(ranges)
+	for _, r := range merged {
+		if contains(r, asOf) {
+			return r, true
+		}
+	}
+	return dateRange{}, false
+}
+
+func hasPermitGapBeforeSpan(permits []models.Permit, span dateRange, asOf time.Time) bool {
+	for _, permit := range permits {
+		if !validPermitType(permit) {
+			continue
+		}
+		r := permitRange(permit)
+		if r.start.IsZero() || r.end.Before(r.start) || r.start.After(asOf) {
+			continue
+		}
+		if r.end.Before(span.start.AddDate(0, 0, -1)) {
+			return true
+		}
+	}
+	return false
+}
+
+func mergeTouchingRanges(ranges []dateRange) []dateRange {
+	return mergeRanges(ranges, func(nextStart, currentEnd time.Time) bool { return !nextStart.After(currentEnd.AddDate(0, 0, 1)) })
+}
+
+func mergeOverlappingRanges(ranges []dateRange) []dateRange {
+	return mergeRanges(ranges, func(nextStart, currentEnd time.Time) bool { return !nextStart.After(currentEnd) })
+}
+
+func mergeRanges(ranges []dateRange, joins func(time.Time, time.Time) bool) []dateRange {
+	if len(ranges) == 0 {
+		return nil
+	}
+	sorted := append([]dateRange(nil), ranges...)
+	sort.Slice(sorted, func(i, j int) bool { return sorted[i].start.Before(sorted[j].start) })
+	merged := []dateRange{sorted[0]}
+	for _, r := range sorted[1:] {
 		last := &merged[len(merged)-1]
-		if !r.start.After(last.end.AddDate(0, 0, 1)) {
+		if joins(r.start, last.end) {
 			if r.end.After(last.end) {
 				last.end = r.end
 			}
@@ -199,12 +267,7 @@ func latestContinuousSpan(permits []models.Permit, asOf time.Time, accept func(m
 			merged = append(merged, r)
 		}
 	}
-	for _, r := range merged {
-		if contains(r, asOf) {
-			return r, true
-		}
-	}
-	return dateRange{}, false
+	return merged
 }
 
 func hasCurrentContinuousPermit(permits []models.Permit, asOf time.Time) bool {

@@ -1,0 +1,16 @@
+{
+  "name": "FEE.fi — Finland eligibility estimator",
+  "short_name": "FEE.fi",
+  "start_url": "/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/",
+  "display": "browser",
+  "background_color": "#f5f8fc",
+  "theme_color": "#063879",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

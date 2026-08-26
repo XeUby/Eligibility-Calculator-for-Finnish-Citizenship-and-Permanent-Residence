@@ -38,6 +38,7 @@ const (
 	PRHighIncome        PRPath = "high_income"
 	PRForeignDegree     PRPath = "foreign_degree"
 	PRExcellentLanguage PRPath = "excellent_language"
+	PRDegreeFinland     PRPath = "degree_finland"
 )
 
 // CalculationRequest is the public HTTP contract. Conditions are self-reported.
@@ -54,6 +55,10 @@ type CalculationRequest struct {
 // legal eligibility for an immigration application.
 type CalculationResponse struct {
 	CitizenshipDays                 int    `json:"citizenship_days"`
+	CitizenshipBPermitCreditDays    int    `json:"citizenship_b_permit_credit_days"`
+	CitizenshipAPDays               int    `json:"citizenship_ap_days"`
+	CitizenshipAbsenceDays          int    `json:"citizenship_absence_days"`
+	CitizenshipAbsencePenaltyDays   int    `json:"citizenship_absence_penalty_days"`
 	CitizenshipRequiredYears        int    `json:"citizenship_required_years"`
 	CitizenshipEligible             bool   `json:"citizenship_residence_met"`
 	CitizenshipEarliest             string `json:"citizenship_earliest_date,omitempty"`

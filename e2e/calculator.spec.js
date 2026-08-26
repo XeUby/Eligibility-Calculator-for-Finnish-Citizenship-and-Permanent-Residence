@@ -60,8 +60,11 @@ test("keeps a completed estimate localised after the language changes", async ({
 test("has no horizontal overflow on a phone-sized viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  expect(await page.locator("body").evaluate((body) => body.scrollWidth <= window.innerWidth)).toBeTruthy();
-  await expect(page.getByRole("button", { name: "Calculate my estimate" })).toBeVisible();
+  await expect(page.locator(".primary")).toBeVisible();
+  for (const locale of ["en", "fi", "sv", "ru", "uk", "ne", "ar", "so", "et", "hi"]) {
+    await page.locator("#language").selectOption(locale);
+    expect(await page.locator("body").evaluate((body) => body.scrollWidth <= window.innerWidth), `${locale} must fit on a phone`).toBeTruthy();
+  }
 });
 
 test("shows the published application and YKI fees without inventing a citizenship-test fee", async ({ page }) => {
@@ -81,6 +84,66 @@ test("offers a privacy-preserving feedback route and project source", async ({ p
   await expect(footer.getByRole("link", { name: "View source code" })).toHaveAttribute("href", /XeUby\/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence$/);
   await expect(footer.getByRole("link", { name: "Report an issue" })).toHaveAttribute("href", /issues\/new\?template=bug_report\.md$/);
   await expect(footer.getByRole("link", { name: "Suggest an improvement" })).toHaveAttribute("href", /issues\/new\?template=improvement\.md$/);
+});
+
+test("saves an optional local draft and clears it on request", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".permit-start").fill("2020-01-01");
+  await page.locator(".permit-end").fill("2026-12-31");
+  await page.locator("#as-of").fill("2026-08-26");
+  await page.locator("#language").selectOption("ru");
+  await page.locator("#save-draft").click();
+  await expect(page.locator("#draft-status")).toContainText("Черновик сохранён");
+
+  await page.reload();
+  await expect(page.locator("#language")).toHaveValue("ru");
+  await expect(page.locator(".permit-start")).toHaveValue("2020-01-01");
+  await expect(page.locator(".permit-end")).toHaveValue("2026-12-31");
+  await expect(page.locator("#as-of")).toHaveValue("2026-08-26");
+
+  await page.locator("#clear-draft").click();
+  await expect(page.locator(".permit-start")).toHaveValue("");
+  await expect(page.locator(".permit-end")).toHaveValue("");
+  await expect(page.locator("#draft-status")).toContainText("удалены");
+});
+
+test("explains calculation inputs and normalises overlapping trips", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".permit-start").fill("2015-01-01");
+  await page.locator(".permit-end").fill("2026-12-31");
+  await page.getByLabel("Citizenship route").selectOption("language");
+  await page.getByLabel("Calculate as of").fill("2026-01-01");
+  await page.getByRole("button", { name: "Add trip" }).click();
+  await page.locator(".absence-start").nth(0).fill("2025-08-20");
+  await page.locator(".absence-end").nth(0).fill("2025-12-31");
+  await page.getByRole("button", { name: "Add trip" }).click();
+  await page.locator(".absence-start").nth(1).fill("2025-09-01");
+  await page.locator(".absence-end").nth(1).fill("2026-01-01");
+  await page.getByRole("button", { name: "Calculate my estimate" }).click();
+
+  await expect(page.locator("#breakdown-heading")).toHaveText("How this estimate was calculated");
+  await expect(page.locator("#breakdown-trip-days")).toHaveText("133 days");
+  await expect(page.locator("#warnings")).toContainText("Overlapping or duplicate trips were counted only once.");
+});
+
+test("includes the Finnish-degree permanent-residence path", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".permit-start").fill("2026-01-01");
+  await page.locator(".permit-end").fill("2030-01-01");
+  await page.locator("#as-of").fill("2026-01-02");
+  await page.locator("#pr-path").selectOption("degree_finland");
+  await page.locator("#conditions-met").check();
+  await page.getByRole("button", { name: "Calculate my estimate" }).click();
+
+  await expect(page.locator("#pr-required")).toHaveText("No residence-time requirement");
+  await expect(page.locator("#pr-status")).toHaveText("Meets residence time");
+});
+
+test("publishes search metadata and a site icon", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("link[rel=canonical]")).toHaveAttribute("href", "https://xeuby.github.io/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/");
+  await expect(page.locator("link[rel=icon]")).toHaveAttribute("href", /favicon\.svg$/);
+  await expect(page.locator("meta[property='og:site_name']")).toHaveAttribute("content", "FEE.fi");
 });
 
 test("translates every static calculator string in each advertised language", async ({ page }) => {

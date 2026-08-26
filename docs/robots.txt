@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xeuby.github.io/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/sitemap.xml
