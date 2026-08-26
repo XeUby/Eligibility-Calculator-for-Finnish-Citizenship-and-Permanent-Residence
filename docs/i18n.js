@@ -123,6 +123,31 @@ window.i18n = (() => {
     errPermitOrder:"لا يمكن أن يكون تاريخ انتهاء التصريح قبل تاريخ البدء.",errTripDates:"أدخل التاريخين لكل رحلة أو احذف الصف الفارغ.",
     errTripOrder:"لا يمكن أن يكون تاريخ العودة قبل تاريخ المغادرة."
   });
+  Object.assign(auxiliary.so, {
+    residenceIntro:"Ku dar dhammaan xilliyada oggolaanshaha ee aan kala go'a lahayn ee khuseeya xisaabtaada.",tripsIntro:"Waa ikhtiyaari, balse ku dar safarrada muddada aad rabto in la qiimeeyo.",
+    permitType:"Nooca oggolaanshaha",continuous:"joogto ah",temporary:"ku-meelgaar",permanent:"joogto ah",
+    startDate:"Taariikhda bilowga",endDate:"Taariikhda dhammaadka",departure:"Taariikhda bixitaanka",return:"Taariikhda soo noqoshada",
+    permitHelp:"A = oggolaansho joogto ah, B = oggolaansho ku-meelgaar ah, P = oggolaansho joogto ah. Taariikhda dhammaadka waa la tiriyaa.",
+    tripHelp:"Maalinta aad ka baxdo Finland iyo maalinta aad soo noqoto waxay u tiriyaan maalmo deganaansho, sida tilmaamaha Migri ay sheegayaan.",
+    citStandard:"Waddada caadiga ah — 8 sano",citLanguage:"Waddada luqadda — 5 sano",
+    citHint:"Waddada 5-sano waxay u baahan tahay shahaadada luqadda ee sharcigu dhigayo. Waddooyinka gaarka ah lama xisaabiyo.",
+    prSix:"6 sano + luqad B1 + 2 sano oo shaqo ah",prIncome:"4 sano + dakhli sannadle ah oo ka badan €40,000",
+    prDegree:"4 sano + shahaado waxbarasho sare oo la aqoonsan yahay + 2 sano oo shaqo ah",prLanguage:"4 sano + luqad C1 + 3 sano oo shaqo ah",
+    prHint:"Waddooyinkani waxay khuseeyaan codsiyada la gudbiyey 8 Janaayo 2026 ama ka dib.",
+    conditionLegend:"Xaqiijinta shuruudaha",conditions:"Waxaan xaqiijinayaa inaan buuxiyey shuruudaha dheeraadka ah ee waddada deganaanshaha joogtada ah ee aan doortay.",
+    resultsHelp:"“Muddada deganaanshaha waa la buuxiyey” ma aha go'aan ama talo inaad codsato.",
+    citizenship:"Jinsiyadda Finland",permanentResidence:"Deganaanshaha joogtada ah",creditedTime:"Muddada deganaanshaha la tixgeliyey",
+    routeRequirement:"Shuruudda waddada",pathRequirement:"Shuruudda waddada",optimisticDate:"Taariikhda ugu horreysa ee la qiyaasay",continuousAP:"Deganaanshaha A/P ee aan kala go'a lahayn",
+    reviewed:"Xeerarka iyo khidmaduhu way isbeddeli karaan. Dib loo eegay: 26 Agoosto 2026.",
+    citApply:"Codsiga jinsiyadda ee dadka waaweyn",citCalculation:"Sida Migri u xisaabiso muddada deganaanshaha",prPaths:"Waddooyinka oggolaanshaha deganaanshaha joogtada ah",
+    residenceRequirements:"Shuruudaha muddada deganaanshaha",applyVerify:"Codso oo xaqiiji",fees:"Khidmadaha habaynta ee hadda",
+    footer:"Qalab waxbarasho oo il-furan. Ma ururiyo xog shakhsiyeed.",
+    statusGood:"Muddada deganaanshaha waa la buuxiyey",statusWait:"Waqti ama shuruudo dheeraad ah ayaa loo baahan yahay",days:"maalmood",calendarYears:"sanooyin taariikheed",
+    calculating:"Waa la xisaabinayaa…",loadError:"Lama soo dejin karin xisaabiyaha. Cusboonaysii bogga oo mar kale isku day.",
+    errPermit:"Ku dar ugu yaraan hal xilli oggolaansho deganaansho.",errPermitDates:"Geli labadaba taariikh ee xilli kasta oo oggolaansho.",
+    errPermitOrder:"Taariikhda dhammaadka oggolaanshaha kama horrayn karto taariikhda bilowga.",errTripDates:"Geli labada taariikh ee safar kasta ama ka saar safka madhan.",
+    errTripOrder:"Taariikhda soo noqoshadu kama horrayn karto taariikhda bixitaanka."
+  });
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
   return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
 })();
