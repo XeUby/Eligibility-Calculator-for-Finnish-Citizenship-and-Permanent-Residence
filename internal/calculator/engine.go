@@ -30,23 +30,25 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 	if asOf.IsZero() {
 		asOf = dateOnly(time.Now())
 	}
-	response := models.CalculationResponse{Warnings: []string{}}
+	response := models.CalculationResponse{WarningCodes: []string{}, Warnings: []string{}}
 	response.CitizenshipRequiredYears = citizenshipRequirement(request.CitizenshipRoute)
 
 	span, found := latestContinuousSpan(request.Permits, asOf, validPermitType)
 	if !found {
-		response.Warnings = append(response.Warnings, "No uninterrupted valid permit period reaches the selected date.")
+		addWarning(&response, "no_permit_span", "No uninterrupted valid permit period reaches the selected date.")
 		return response
 	}
 	if !hasCurrentContinuousPermit(request.Permits, asOf) {
-		response.Warnings = append(response.Warnings, "A valid A or P permit is required for the common citizenship route.")
+		addWarning(&response, "citizenship_requires_ap", "A valid A or P permit is required for the common citizenship route.")
 	}
 	creditStart, firstA, bCredit, days := citizenshipCredit(request.Permits, span)
 	penalty, absenceWarnings := absenceAdjustment(request.Absences, creditStart, asOf)
-	response.Warnings = append(response.Warnings, absenceWarnings...)
+	for _, warning := range absenceWarnings {
+		addWarning(&response, "absence_limits", warning)
+	}
 	response.CitizenshipDays = max(0, days-penalty)
 	if firstA.IsZero() {
-		response.Warnings = append(response.Warnings, "Add an A or P permit period to estimate a citizenship application date.")
+		addWarning(&response, "citizenship_needs_ap", "Add an A or P permit period to estimate a citizenship application date.")
 	} else {
 		targetDate := firstA.AddDate(response.CitizenshipRequiredYears, 0, -bCredit+penalty)
 		response.CitizenshipEligible = !asOf.Before(targetDate) && hasCurrentContinuousPermit(request.Permits, asOf)
@@ -54,21 +56,21 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 			response.CitizenshipEarliest = asOf.Format("2006-01-02")
 		} else {
 			response.CitizenshipEarliest = targetDate.Format("2006-01-02")
-			response.Warnings = append(response.Warnings, "The projected citizenship date assumes uninterrupted legal residence and no further absences.")
+			addWarning(&response, "citizenship_projection", "The projected citizenship date assumes uninterrupted legal residence and no further absences.")
 		}
 		if !targetDate.Before(citizenshipTestApplicationDate) {
-			response.Warnings = append(response.Warnings, "For citizenship applications submitted on or after 2027-03-01, Migri states that applicants aged 18–64 will need to meet the new civic-knowledge requirement, usually with a citizenship test. Check the official exemptions and alternatives.")
+			addWarning(&response, "citizenship_civic_knowledge", "For citizenship applications submitted on or after 2027-03-01, Migri states that applicants aged 18–64 will need to meet the new civic-knowledge requirement, usually with a citizenship test. Check the official exemptions and alternatives.")
 		}
 	}
 
 	prRequired, prWarning := prRequirement(request.PermanentResidence)
 	response.PermanentResidenceRequiredYears = prRequired
 	if prWarning != "" {
-		response.Warnings = append(response.Warnings, prWarning)
+		addWarning(&response, prWarningCode(request.PermanentResidence), prWarning)
 	}
 	aSpan, hasASpan := latestContinuousSpan(request.Permits, asOf, func(p models.Permit) bool { return p.Type == models.PermitA || p.Type == models.PermitP })
 	if !hasASpan {
-		response.Warnings = append(response.Warnings, "No uninterrupted A or P permit period reaches the selected date for permanent residence.")
+		addWarning(&response, "no_pr_ap_span", "No uninterrupted A or P permit period reaches the selected date for permanent residence.")
 		return response
 	}
 	response.PermanentResidenceDays = daysInclusive(aSpan.start, asOf)
@@ -78,12 +80,27 @@ func Calculate(request models.CalculationRequest) models.CalculationResponse {
 		response.PermanentResidenceEarliest = asOf.Format("2006-01-02")
 	} else {
 		response.PermanentResidenceEarliest = prTargetDate.Format("2006-01-02")
-		response.Warnings = append(response.Warnings, "The projected permanent-residence date assumes the selected A/P permit remains uninterrupted.")
+		addWarning(&response, "pr_projection", "The projected permanent-residence date assumes the selected A/P permit remains uninterrupted.")
 	}
 	if !request.ConditionsMet {
-		response.Warnings = append(response.Warnings, "You have not confirmed the additional conditions for the selected permanent-residence path.")
+		addWarning(&response, "pr_conditions_unconfirmed", "You have not confirmed the additional conditions for the selected permanent-residence path.")
 	}
 	return response
+}
+
+func addWarning(response *models.CalculationResponse, code, message string) {
+	response.WarningCodes = append(response.WarningCodes, code)
+	response.Warnings = append(response.Warnings, message)
+}
+
+func prWarningCode(path models.PRPath) string {
+	if path == models.PRSixYears {
+		return "pr_six_requirements"
+	}
+	if path == models.PRHighIncome || path == models.PRForeignDegree || path == models.PRExcellentLanguage {
+		return "pr_path_conditions"
+	}
+	return "pr_unknown_path"
 }
 
 func citizenshipRequirement(route models.CitizenshipRoute) int {

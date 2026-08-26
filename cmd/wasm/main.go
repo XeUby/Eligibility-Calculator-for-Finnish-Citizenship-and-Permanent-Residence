@@ -30,7 +30,7 @@ func calculateEligibility(_ js.Value, args []js.Value) any {
 		"citizenshipEligible": result.CitizenshipEligible, "citizenshipEarliest": result.CitizenshipEarliest,
 		"prDays": result.PermanentResidenceDays, "prRequiredYears": result.PermanentResidenceRequiredYears,
 		"prEligible": result.PermanentResidenceEligible, "prEarliest": result.PermanentResidenceEarliest,
-		"warnings": toJSArray(result.Warnings),
+		"warningCodes": toJSArray(result.WarningCodes), "warnings": toJSArray(result.Warnings),
 	}
 }
 

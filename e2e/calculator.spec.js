@@ -31,3 +31,25 @@ test("translates all primary Russian form controls", async ({ page }) => {
   await expect(page.locator("#pr-path option[value=six_years]")).toHaveText("6 лет + язык B1 + 2 года работы");
   await expect(page.locator("[data-i18n=tripHelp]")).toHaveText(/День выезда из Финляндии/);
 });
+
+test("keeps a completed estimate localised after the language changes", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".permit-start").fill("2020-01-01");
+  await page.locator(".permit-end").fill("2026-12-31");
+  await page.getByLabel("Citizenship route").selectOption("language");
+  await page.getByLabel("Permanent residence path").selectOption("high_income");
+  await page.getByLabel("Calculate as of").fill("2026-08-26");
+  await page.getByLabel(/I confirm that I meet/).check();
+  await page.getByRole("button", { name: "Calculate my estimate" }).click();
+  await page.getByLabel("Language").selectOption("ru");
+
+  await expect(page.locator("#citizenship-status")).toHaveText("Срок проживания выполнен");
+  await expect(page.locator("#warnings")).toContainText("дополнительные законные условия");
+});
+
+test("has no horizontal overflow on a phone-sized viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(page.locator("body")).toEvaluate((body) => body.scrollWidth <= window.innerWidth);
+  await expect(page.getByRole("button", { name: "Calculate my estimate" })).toBeVisible();
+});

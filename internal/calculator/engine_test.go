@@ -83,4 +83,7 @@ func TestCalculateWarnsAboutThe2027CitizenshipTest(t *testing.T) {
 	if !strings.Contains(strings.Join(response.Warnings, " "), "2027-03-01") {
 		t.Fatal("expected citizenship-test warning")
 	}
+	if !strings.Contains(strings.Join(response.WarningCodes, " "), "citizenship_civic_knowledge") {
+		t.Fatal("expected stable citizenship-test warning code")
+	}
 }
