@@ -59,6 +59,7 @@
     .metric span { color:var(--muted); } .metric strong { text-align:right; }
     .warnings { margin:18px 0 0; padding:16px 20px 16px 38px; background:#fff7e5; border-radius:10px; color:#573900; }
     .resources { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .costs { grid-template-columns:repeat(2,1fr); }
     .resource { padding:18px; background:#f8fbff; border:1px solid var(--line); border-radius:12px; }
     footer { padding:27px 0 40px; color:var(--muted); font-size:.9rem; }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
@@ -154,6 +155,17 @@
         </article>
       </div>
       <ul id="warnings" class="warnings"></ul>
+    </section>
+
+    <section class="panel" aria-labelledby="costs-heading">
+      <h2 id="costs-heading" data-i18n="costHeading">Application and test costs</h2>
+      <p class="help" data-i18n="costIntro">Published fees only — rules and prices can change. These costs are not included in this estimate.</p>
+      <div class="resources costs">
+        <article class="resource"><h3 data-i18n="costCitTitle">Citizenship application</h3><p data-i18n="costCitBody">€550 online · €650 paper application</p><p><a href="https://migri.fi/en/processing-fees-and-payment-methods" target="_blank" rel="noopener noreferrer" data-i18n="costMigriLink">Official Migri fee list</a></p></article>
+        <article class="resource"><h3 data-i18n="costPrTitle">Permanent residence permit</h3><p data-i18n="costPrBody">€380 online · €600 paper application</p><p><a href="https://migri.fi/en/processing-fees-and-payment-methods" target="_blank" rel="noopener noreferrer" data-i18n="costMigriLink">Official Migri fee list</a></p></article>
+        <article class="resource"><h3 data-i18n="costYkiTitle">YKI language test</h3><p data-i18n="costYkiBody">Basic €165 · Intermediate €190 · Advanced €216</p><p class="field-help" data-i18n="costYkiNote">The intermediate YKI test is one common way to demonstrate the language requirement. Check the accepted alternatives.</p><p><a href="https://www.oph.fi/en/education-and-qualifications/registering-yki-test" target="_blank" rel="noopener noreferrer" data-i18n="costYkiLink">Official YKI registration and fees</a></p></article>
+        <article class="resource"><h3 data-i18n="costCivicTitle">Citizenship test from 2027</h3><p data-i18n="costCivicBody">The fee has not been published by Migri yet.</p><p class="field-help" data-i18n="costCivicNote">The civic-knowledge requirement applies to applications submitted from 1 March 2027. Migri says more practical information will be published during autumn 2026.</p><p><a href="https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027" target="_blank" rel="noopener noreferrer" data-i18n="costTestLink">Citizenship-test update</a></p></article>
+      </div>
     </section>
 
     <section class="panel" aria-labelledby="sources-heading">

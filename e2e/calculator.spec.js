@@ -64,6 +64,15 @@ test("has no horizontal overflow on a phone-sized viewport", async ({ page }) =>
   await expect(page.getByRole("button", { name: "Calculate my estimate" })).toBeVisible();
 });
 
+test("shows the published application and YKI fees without inventing a citizenship-test fee", async ({ page }) => {
+  await page.goto("/");
+  const costs = page.locator("section:has(#costs-heading)");
+  await expect(costs).toContainText("€550 online · €650 paper application");
+  await expect(costs).toContainText("€380 online · €600 paper application");
+  await expect(costs).toContainText("Basic €165 · Intermediate €190 · Advanced €216");
+  await expect(costs).toContainText("The fee has not been published by Migri yet.");
+});
+
 test("translates every static calculator string in each advertised language", async ({ page }) => {
   await page.goto("/");
   const readStrings = () => page.locator("[data-i18n]").evaluateAll((elements) =>
