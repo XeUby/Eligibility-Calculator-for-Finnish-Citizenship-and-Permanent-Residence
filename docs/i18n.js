@@ -72,6 +72,32 @@ window.i18n = (() => {
     errPermitOrder:"Luvan päättymispäivä ei voi olla alkupäivää aiempi.",errTripDates:"Anna molemmat päivämäärät jokaiselle matkalle tai poista tyhjä rivi.",
     errTripOrder:"Paluupäivä ei voi olla lähtöpäivää aiempi."
   });
+  Object.assign(auxiliary.sv, {
+    residenceIntro:"Lägg till alla obrutna tillståndsperioder som är relevanta för din beräkning.",
+    tripsIntro:"Valfritt, men lägg till resor under den period du vill bedöma.",
+    permitType:"Typ av tillstånd",continuous:"kontinuerligt",temporary:"tillfälligt",permanent:"permanent",
+    startDate:"Startdatum",endDate:"Slutdatum",departure:"Avresedatum",return:"Återresedatum",
+    permitHelp:"A = kontinuerligt tillstånd, B = tillfälligt tillstånd, P = permanent tillstånd. Tillståndets slutdatum räknas med.",
+    tripHelp:"Dagen du lämnar Finland och dagen du återvänder räknas som bosättningsdagar enligt Migris publicerade anvisning.",
+    citStandard:"Standardväg — 8 år",citLanguage:"Språkväg — 5 år",
+    citHint:"Femårsvägen kräver den lagstadgade språkkompetensen. Särskilda vägar modelleras inte.",
+    prSix:"6 år + B1-språk + 2 års arbetshistoria",prIncome:"4 år + årsinkomst över 40 000 €",
+    prDegree:"4 år + erkänd högskoleexamen + 2 års arbetshistoria",prLanguage:"4 år + C1-språk + 3 års arbetshistoria",
+    prHint:"Dessa vägar gäller ansökningar som lämnats in den 8 januari 2026 eller senare.",
+    conditionLegend:"Bekräftelse av villkor",conditions:"Jag bekräftar att jag uppfyller de ytterligare villkoren för min valda väg till permanent uppehållstillstånd.",
+    resultsHelp:"”Bosättningstiden uppfylls” är inte ett beslut eller en rekommendation att ansöka.",
+    citizenship:"Finskt medborgarskap",permanentResidence:"Permanent uppehållstillstånd",creditedTime:"Tillgodoräknad bosättningstid",
+    routeRequirement:"Krav för vägen",pathRequirement:"Krav för vägen",optimisticDate:"Tidigt beräknat datum",continuousAP:"Oavbruten A/P-bosättning",
+    reviewed:"Regler och avgifter kan ändras. Senast kontrollerad: 26 augusti 2026.",
+    citApply:"Ansökan om medborgarskap för vuxna",citCalculation:"Hur Migri beräknar bosättningstid",prPaths:"Vägar till permanent uppehållstillstånd",
+    residenceRequirements:"Krav på bosättningstid",applyVerify:"Ansök och kontrollera",fees:"Aktuella handläggningsavgifter",
+    footer:"Ett utbildningsverktyg med öppen källkod. Det samlar inte in personuppgifter.",
+    statusGood:"Bosättningstiden uppfylls",statusWait:"Mer tid eller fler villkor behövs",days:"dagar",calendarYears:"kalenderår",
+    calculating:"Beräknar…",loadError:"Kalkylatorn kunde inte laddas. Uppdatera sidan och försök igen.",
+    errPermit:"Lägg till minst en uppehållstillståndsperiod.",errPermitDates:"Ange båda datumen för varje tillståndsperiod.",
+    errPermitOrder:"Ett tillstånds slutdatum kan inte vara före startdatumet.",errTripDates:"Ange båda datumen för varje resa eller ta bort den tomma raden.",
+    errTripOrder:"Återresedatumet kan inte vara före avresedatumet."
+  });
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
   return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
 })();
