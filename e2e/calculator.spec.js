@@ -32,6 +32,16 @@ test("translates all primary Russian form controls", async ({ page }) => {
   await expect(page.locator("[data-i18n=tripHelp]")).toHaveText(/День выезда из Финляндии/);
 });
 
+test("does not fall back to English for the Nepali calculator controls", async ({ page }) => {
+  await page.goto("/");
+  await page.getByLabel("Language").selectOption("ne");
+  await expect(page.locator("[data-i18n=residenceIntro]")).toHaveText("तपाईंको गणनासँग सम्बन्धित सबै अविच्छिन्न अनुमति अवधिहरू थप्नुहोस्।");
+  await expect(page.locator(".permit-type option[value=A]")).toHaveText("A — निरन्तर");
+  await expect(page.locator("#citizenship-route option[value=standard]")).toHaveText("साधारण मार्ग — ८ वर्ष");
+  await expect(page.locator("#pr-path option[value=high_income]")).toHaveText("४ वर्ष + वार्षिक आम्दानी €40,000 भन्दा बढी");
+  await expect(page.locator("[data-i18n=tripHelp]")).toContainText("फिनल्यान्ड छोड्ने दिन");
+});
+
 test("keeps a completed estimate localised after the language changes", async ({ page }) => {
   await page.goto("/");
   await page.locator(".permit-start").fill("2020-01-01");

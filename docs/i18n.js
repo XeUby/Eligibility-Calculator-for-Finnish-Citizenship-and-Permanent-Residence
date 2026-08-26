@@ -26,6 +26,31 @@ window.i18n = (() => {
     et:{skipToContent:"Liigu kalkulaatorisse",languageLabel:"Keel",warnings:{no_permit_span:"Valitud kuupäevani ei ulatu katkematut kehtivat loaperioodi.",citizenship_requires_ap:"Tavaline kodakondsuse tee nõuab kehtivat A- või P-luba.",absence_limits:"Sisestatud eemalviibimised ületavad Migri piiri, mistõttu hinnang jätab mõned päevad arvestamata.",citizenship_needs_ap:"Kodakondsuse taotlemise kuupäeva hindamiseks lisage A- või P-loaperiood.",citizenship_projection:"Hinnanguline kodakondsuse kuupäev eeldab katkematut seaduslikku elamist ja uusi eemalviibimisi mitte.",citizenship_civic_knowledge:"Alates 1. märtsist 2027 peavad 18–64-aastased taotlejad täitma ühiskonnateadmiste nõude. Kontrollige Migri alternatiive ja erandeid.",pr_path_conditions:"Valitud nelja-aastasel teel on lisatingimused; kontrollige neid Migrilt.",pr_six_requirements:"Kuueaastane tee nõuab B1 soome või rootsi keelt ja kahte aastat töökogemust koos seadusjärgse vanuseerandiga.",pr_unknown_path:"Valige alalise elamisloa taotlemise tee enne hinnangule tuginemist.",no_pr_ap_span:"Valitud kuupäevani ei ulatu katkematut A- või P-loaperioodi alalise elamisloa jaoks.",pr_projection:"Hinnanguline alalise elamisloa kuupäev eeldab, et valitud A/P-luba jätkub katkematult.",pr_conditions_unconfirmed:"Te ei ole valitud tee lisatingimusi kinnitanud."}},
     hi:{skipToContent:"कैलकुलेटर पर जाएँ",languageLabel:"भाषा",warnings:{no_permit_span:"चुनी गई तारीख तक पहुँचने वाली कोई निरंतर वैध अनुमति अवधि नहीं है।",citizenship_requires_ap:"नागरिकता के सामान्य मार्ग के लिए वैध A या P अनुमति आवश्यक है।",absence_limits:"दर्ज अनुपस्थिति Migri की सीमा से अधिक है, इसलिए अनुमान कुछ दिनों को निकालता है।",citizenship_needs_ap:"नागरिकता आवेदन तिथि का अनुमान लगाने के लिए A या P अनुमति अवधि जोड़ें।",citizenship_projection:"अनुमानित नागरिकता तिथि निर्बाध कानूनी निवास और आगे कोई अनुपस्थिति न होने को मानती है।",citizenship_civic_knowledge:"1 मार्च 2027 से 18–64 वर्ष के आवेदकों को नागरिक ज्ञान की आवश्यकता पूरी करनी होगी। Migri के विकल्प और छूट देखें।",pr_path_conditions:"चुने गए 4-वर्षीय मार्ग में अतिरिक्त वैधानिक शर्तें हैं; उन्हें Migri से सत्यापित करें।",pr_six_requirements:"6-वर्षीय मार्ग के लिए B1 फिनिश/स्वीडिश और दो वर्ष का कार्य इतिहास आवश्यक है, वैधानिक आयु अपवाद के साथ।",pr_unknown_path:"अनुमान पर निर्भर होने से पहले स्थायी निवास आवेदन मार्ग चुनें।",no_pr_ap_span:"स्थायी निवास के लिए चुनी गई तारीख तक पहुँचने वाली कोई निरंतर A या P अनुमति अवधि नहीं है।",pr_projection:"अनुमानित स्थायी निवास तिथि मानती है कि चुनी हुई A/P अनुमति बिना रुकावट जारी रहेगी।",pr_conditions_unconfirmed:"आपने चुने गए मार्ग की अतिरिक्त शर्तों की पुष्टि नहीं की है।"}}
   };
+  Object.assign(auxiliary.ne, {
+    residenceIntro:"तपाईंको गणनासँग सम्बन्धित सबै अविच्छिन्न अनुमति अवधिहरू थप्नुहोस्।",
+    permitType:"अनुमतिको प्रकार",continuous:"निरन्तर",temporary:"अस्थायी",permanent:"स्थायी",
+    startDate:"सुरु मिति",endDate:"समाप्ति मिति",departure:"प्रस्थान मिति",return:"फर्कने मिति",
+    permitHelp:"A = निरन्तर अनुमति, B = अस्थायी अनुमति, P = स्थायी अनुमति। अनुमति समाप्ति मिति समावेश हुन्छ।",
+    tripHelp:"फिनल्यान्ड छोड्ने दिन र फर्कने दिन Migri को प्रकाशित निर्देशनअनुसार बसोबासका दिन मानिन्छन्।",
+    citStandard:"साधारण मार्ग — ८ वर्ष",citLanguage:"भाषा मार्ग — ५ वर्ष",
+    citHint:"५-वर्षे मार्गका लागि कानुनले तोकेको भाषा योग्यता आवश्यक हुन्छ। विशेष मार्गहरू समावेश छैनन्।",
+    prSix:"६ वर्ष + B1 भाषा + २ वर्षको काम",prIncome:"४ वर्ष + वार्षिक आम्दानी €40,000 भन्दा बढी",
+    prDegree:"४ वर्ष + मान्य उच्च शिक्षा डिग्री + २ वर्षको काम",prLanguage:"४ वर्ष + C1 भाषा + ३ वर्षको काम",
+    prHint:"यी मार्गहरू ८ जनवरी २०२६ वा त्यसपछि दर्ता भएका आवेदनमा लागू हुन्छन्।",
+    conditionLegend:"सर्त पुष्टि",conditions:"म मेरो छानिएको स्थायी बसोबास मार्गका थप सर्तहरू पूरा गर्छु भनेर पुष्टि गर्छु।",
+    resultsHelp:"“बसोबास अवधि पूरा भयो” निर्णय वा आवेदन गर्नुपर्ने सिफारिस होइन।",
+    citizenship:"फिनल्यान्डको नागरिकता",permanentResidence:"स्थायी बसोबास",creditedTime:"मान्य बसोबास अवधि",
+    routeRequirement:"मार्गको आवश्यकता",pathRequirement:"मार्गको आवश्यकता",optimisticDate:"अनुमानित मिति",continuousAP:"निरन्तर A/P बसोबास",
+    reviewed:"नियम र शुल्क परिवर्तन हुन सक्छन्। अन्तिम समीक्षा: २६ अगस्ट २०२६।",
+    citApply:"वयस्कका लागि नागरिकता आवेदन",citCalculation:"Migri ले बसोबास अवधि कसरी गणना गर्छ",
+    prPaths:"स्थायी बसोबास अनुमति मार्ग",residenceRequirements:"बसोबास-अवधि आवश्यकताहरू",applyVerify:"आवेदन र प्रमाणीकरण",fees:"हालका प्रक्रिया शुल्क",
+    footer:"खुला स्रोत शैक्षिक उपकरण। यसले व्यक्तिगत विवरण सङ्कलन गर्दैन।",
+    statusGood:"बसोबास अवधि पूरा भयो",statusWait:"थप समय वा सर्तहरू आवश्यक छन्",days:"दिन",calendarYears:"क्यालेन्डर वर्ष",
+    calculating:"गणना हुँदैछ…",loadError:"क्यालकुलेटर लोड हुन सकेन। पृष्ठ पुनःताजा गरेर फेरि प्रयास गर्नुहोस्।",
+    errPermit:"कम्तीमा एउटा बसोबास-अनुमति अवधि थप्नुहोस्।",errPermitDates:"हरेक अनुमति अवधिका दुवै मिति भर्नुहोस्।",
+    errPermitOrder:"अनुमति समाप्ति मिति सुरु मितिभन्दा अघिको हुन सक्दैन।",errTripDates:"हरेक यात्राका दुवै मिति भर्नुहोस् वा खाली पङ्क्ति हटाउनुहोस्।",
+    errTripOrder:"फर्कने मिति प्रस्थान मितिभन्दा अघिको हुन सक्दैन।"
+  });
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
   return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
 })();
