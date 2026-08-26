@@ -148,6 +148,31 @@ window.i18n = (() => {
     errPermitOrder:"Taariikhda dhammaadka oggolaanshaha kama horrayn karto taariikhda bilowga.",errTripDates:"Geli labada taariikh ee safar kasta ama ka saar safka madhan.",
     errTripOrder:"Taariikhda soo noqoshadu kama horrayn karto taariikhda bixitaanka."
   });
+  Object.assign(auxiliary.et, {
+    residenceIntro:"Lisage kõik teie arvutuse jaoks olulised katkematud loaperioodid.",tripsIntro:"Valikuline, kuid lisage hinnatava ajavahemiku reisid.",
+    permitType:"Loa liik",continuous:"pidev",temporary:"ajutine",permanent:"alaline",
+    startDate:"Alguskuupäev",endDate:"Lõppkuupäev",departure:"Lahkumiskuupäev",return:"Tagasipöördumise kuupäev",
+    permitHelp:"A = pidev luba, B = ajutine luba, P = alaline luba. Loa lõppkuupäev on arvestatud.",
+    tripHelp:"Soome lahkumise ja tagasipöördumise päev loetakse elamispäevaks vastavalt Migri avaldatud juhistele.",
+    citStandard:"Tavaline tee — 8 aastat",citLanguage:"Keeleline tee — 5 aastat",
+    citHint:"Viieaastane tee nõuab seaduses ette nähtud keeleoskust. Erijuhte ei modelleerita.",
+    prSix:"6 aastat + B1-keel + 2 aastat töökogemust",prIncome:"4 aastat + aastasissetulek üle 40 000 €",
+    prDegree:"4 aastat + tunnustatud kõrghariduskraad + 2 aastat töökogemust",prLanguage:"4 aastat + C1-keel + 3 aastat töökogemust",
+    prHint:"Need teed kehtivad taotlustele, mis on esitatud 8. jaanuaril 2026 või hiljem.",
+    conditionLegend:"Tingimuste kinnitus",conditions:"Kinnitan, et täidan valitud alalise elamisloa tee lisatingimused.",
+    resultsHelp:"„Elamisaja nõue on täidetud” ei ole otsus ega soovitus taotleda.",
+    citizenship:"Soome kodakondsus",permanentResidence:"Alaline elamisluba",creditedTime:"Arvesse võetud elamisaeg",
+    routeRequirement:"Tee nõue",pathRequirement:"Tee nõue",optimisticDate:"Varaseim hinnanguline kuupäev",continuousAP:"Katkematu A/P-elamine",
+    reviewed:"Reeglid ja tasud võivad muutuda. Viimati kontrollitud: 26. august 2026.",
+    citApply:"Täiskasvanu kodakondsustaotlus",citCalculation:"Kuidas Migri elamisaega arvutab",prPaths:"Alalise elamisloa teed",
+    residenceRequirements:"Elamisaja nõuded",applyVerify:"Taotle ja kontrolli",fees:"Kehtivad menetlustasud",
+    footer:"Avatud lähtekoodiga haridustööriist. See ei kogu isikuandmeid.",
+    statusGood:"Elamisaja nõue on täidetud",statusWait:"Vaja on rohkem aega või tingimusi",days:"päeva",calendarYears:"kalendriaastat",
+    calculating:"Arvutamine…",loadError:"Kalkulaatorit ei saanud laadida. Värskendage lehte ja proovige uuesti.",
+    errPermit:"Lisage vähemalt üks elamisloaperiood.",errPermitDates:"Sisestage iga loaperioodi mõlemad kuupäevad.",
+    errPermitOrder:"Loa lõppkuupäev ei saa olla alguskuupäevast varasem.",errTripDates:"Sisestage iga reisi mõlemad kuupäevad või eemaldage tühi rida.",
+    errTripOrder:"Tagasipöördumise kuupäev ei saa olla lahkumiskuupäevast varasem."
+  });
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
   return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
 })();
