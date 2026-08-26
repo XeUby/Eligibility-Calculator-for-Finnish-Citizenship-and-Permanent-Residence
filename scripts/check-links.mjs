@@ -5,10 +5,13 @@ import { promisify } from "node:util";
 const sourceFiles = ["docs/index.html", "docs/RULES_REVIEW.md"];
 const urlPattern = /https?:\/\/[^\s"'<>)]+/g;
 const timeoutMs = 15_000;
+const ownHostnames = new Set(["finresidence.fi", "www.finresidence.fi"]);
 const execFileAsync = promisify(execFile);
 
 const contents = await Promise.all(sourceFiles.map((file) => readFile(file, "utf8")));
-const urls = [...new Set(contents.flatMap((content) => content.match(urlPattern) ?? []))].sort();
+const urls = [...new Set(contents
+  .flatMap((content) => content.match(urlPattern) ?? [])
+  .filter((url) => !ownHostnames.has(new URL(url).hostname)))].sort();
 
 if (!urls.length) {
   throw new Error("No external source URLs were found.");
