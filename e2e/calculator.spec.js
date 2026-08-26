@@ -60,7 +60,7 @@ test("keeps a completed estimate localised after the language changes", async ({
 test("has no horizontal overflow on a phone-sized viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await expect(page.locator("body")).toEvaluate((body) => body.scrollWidth <= window.innerWidth);
+  expect(await page.locator("body").evaluate((body) => body.scrollWidth <= window.innerWidth)).toBeTruthy();
   await expect(page.getByRole("button", { name: "Calculate my estimate" })).toBeVisible();
 });
 
