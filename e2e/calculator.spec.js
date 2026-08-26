@@ -63,3 +63,19 @@ test("has no horizontal overflow on a phone-sized viewport", async ({ page }) =>
   await expect(page.locator("body")).toEvaluate((body) => body.scrollWidth <= window.innerWidth);
   await expect(page.getByRole("button", { name: "Calculate my estimate" })).toBeVisible();
 });
+
+test("translates every static calculator string in each advertised language", async ({ page }) => {
+  await page.goto("/");
+  const readStrings = () => page.locator("[data-i18n]").evaluateAll((elements) =>
+    elements.map((element) => ({ key: element.dataset.i18n, text: element.textContent.trim() }))
+  );
+  const english = new Map((await readStrings()).map(({ key, text }) => [key, text]));
+
+  for (const locale of ["fi", "sv", "ru", "uk", "ne", "ar", "so", "et", "hi"]) {
+    await page.locator("#language").selectOption(locale);
+    const fallbackKeys = (await readStrings())
+      .filter(({ key, text }) => text === english.get(key))
+      .map(({ key }) => key);
+    expect(fallbackKeys, `${locale} must not use an English static-string fallback`).toEqual([]);
+  }
+});

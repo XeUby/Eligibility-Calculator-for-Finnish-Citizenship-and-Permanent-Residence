@@ -173,6 +173,31 @@ window.i18n = (() => {
     errPermitOrder:"Loa lõppkuupäev ei saa olla alguskuupäevast varasem.",errTripDates:"Sisestage iga reisi mõlemad kuupäevad või eemaldage tühi rida.",
     errTripOrder:"Tagasipöördumise kuupäev ei saa olla lahkumiskuupäevast varasem."
   });
+  Object.assign(auxiliary.hi, {
+    residenceIntro:"अपनी गणना से संबंधित सभी निरंतर अनुमति-अवधियाँ जोड़ें।",tripsIntro:"वैकल्पिक है, लेकिन जिस अवधि का मूल्यांकन करना है उसमें यात्राएँ जोड़ें।",
+    permitType:"अनुमति का प्रकार",continuous:"निरंतर",temporary:"अस्थायी",permanent:"स्थायी",
+    startDate:"आरंभ तिथि",endDate:"समाप्ति तिथि",departure:"प्रस्थान तिथि",return:"वापसी तिथि",
+    permitHelp:"A = निरंतर अनुमति, B = अस्थायी अनुमति, P = स्थायी अनुमति। अनुमति की समाप्ति तिथि शामिल है।",
+    tripHelp:"जिस दिन आप फिनलैंड छोड़ते हैं और जिस दिन लौटते हैं, दोनों Migri के प्रकाशित मार्गदर्शन के अनुसार निवास के दिन माने जाते हैं।",
+    citStandard:"मानक मार्ग — 8 वर्ष",citLanguage:"भाषा मार्ग — 5 वर्ष",
+    citHint:"5-वर्षीय मार्ग के लिए कानून द्वारा निर्धारित भाषा योग्यता आवश्यक है। विशेष मार्गों को शामिल नहीं किया गया है।",
+    prSix:"6 वर्ष + B1 भाषा + 2 वर्ष का कार्य अनुभव",prIncome:"4 वर्ष + वार्षिक आय €40,000 से अधिक",
+    prDegree:"4 वर्ष + मान्यता प्राप्त उच्च शिक्षा डिग्री + 2 वर्ष का कार्य अनुभव",prLanguage:"4 वर्ष + C1 भाषा + 3 वर्ष का कार्य अनुभव",
+    prHint:"ये मार्ग 8 जनवरी 2026 या उसके बाद जमा किए गए आवेदनों पर लागू होते हैं।",
+    conditionLegend:"शर्तों की पुष्टि",conditions:"मैं पुष्टि करता/करती हूँ कि मैं अपने चुने हुए स्थायी निवास मार्ग की अतिरिक्त शर्तें पूरी करता/करती हूँ।",
+    resultsHelp:"“निवास अवधि पूरी है” कोई निर्णय या आवेदन करने की सिफारिश नहीं है।",
+    citizenship:"फिनलैंड की नागरिकता",permanentResidence:"स्थायी निवास",creditedTime:"मान्य निवास अवधि",
+    routeRequirement:"मार्ग की आवश्यकता",pathRequirement:"मार्ग की आवश्यकता",optimisticDate:"अनुमानित सबसे पहली तिथि",continuousAP:"निरंतर A/P निवास",
+    reviewed:"नियम और शुल्क बदल सकते हैं। अंतिम समीक्षा: 26 अगस्त 2026।",
+    citApply:"वयस्कों के लिए नागरिकता आवेदन",citCalculation:"Migri निवास अवधि कैसे गिनती है",prPaths:"स्थायी निवास अनुमति के मार्ग",
+    residenceRequirements:"निवास अवधि की आवश्यकताएँ",applyVerify:"आवेदन करें और सत्यापित करें",fees:"वर्तमान प्रसंस्करण शुल्क",
+    footer:"ओपन-सोर्स शैक्षिक उपकरण। यह व्यक्तिगत डेटा एकत्र नहीं करता।",
+    statusGood:"निवास अवधि पूरी है",statusWait:"अधिक समय या शर्तों की आवश्यकता है",days:"दिन",calendarYears:"कैलेंडर वर्ष",
+    calculating:"गणना हो रही है…",loadError:"कैलकुलेटर लोड नहीं हो सका। पृष्ठ को रीफ़्रेश करके फिर प्रयास करें।",
+    errPermit:"कम से कम एक निवास-अनुमति अवधि जोड़ें।",errPermitDates:"हर अनुमति-अवधि के लिए दोनों तिथियाँ भरें।",
+    errPermitOrder:"अनुमति की समाप्ति तिथि आरंभ तिथि से पहले नहीं हो सकती।",errTripDates:"हर यात्रा के लिए दोनों तिथियाँ भरें या खाली पंक्ति हटाएँ।",
+    errTripOrder:"वापसी तिथि प्रस्थान तिथि से पहले नहीं हो सकती।"
+  });
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
   return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
 })();
