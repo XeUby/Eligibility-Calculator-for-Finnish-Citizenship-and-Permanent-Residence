@@ -62,8 +62,15 @@
     .costs { grid-template-columns:repeat(2,1fr); }
     .resource { padding:18px; background:#f8fbff; border:1px solid var(--line); border-radius:12px; }
     footer { padding:27px 0 40px; color:var(--muted); font-size:.9rem; }
+    .site-footer { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:18px; align-items:start; border-top:1px solid var(--line); }
+    .footer-brand { margin:0 0 5px; color:var(--ink); font-size:1rem; font-weight:800; }
+    .footer-copy { margin:0; max-width:720px; }
+    .footer-privacy { margin:5px 0 0; }
+    .footer-links { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
+    .footer-links a { display:inline-flex; align-items:center; min-height:40px; padding:8px 11px; border:1px solid #8dafd9; border-radius:8px; color:var(--blue); font-weight:700; text-decoration:none; }
+    .footer-links a:hover { background:#edf5ff; }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-    @media (max-width:720px) { .history-row,.absence-row,.choices,.result-grid,.resources,.hero-head { grid-template-columns:1fr; } .history-row { align-items:stretch; } .remove { width:100%; } .section-head { display:block; } .section-head button { width:100%; margin-top:12px; } .language { width:min(100%,240px); margin-top:14px; } .panel { padding:18px; } }
+    @media (max-width:720px) { .history-row,.absence-row,.choices,.result-grid,.resources,.hero-head,.site-footer { grid-template-columns:1fr; } .history-row { align-items:stretch; } .remove { width:100%; } .section-head { display:block; } .section-head button { width:100%; margin-top:12px; } .language { width:min(100%,240px); margin-top:14px; } .panel { padding:18px; } .footer-links { justify-content:flex-start; } }
     @media (max-width:420px) { .wrap { width:min(100% - 24px, 1100px); } header { padding:30px 0; } h1 { font-size:clamp(2rem,11vw,2.55rem); line-height:1.14; } .panel { padding:16px; } .metric { align-items:start; flex-direction:column; gap:2px; } .metric strong { text-align:left; } }
   </style>
 </head>
@@ -182,7 +189,18 @@
       </div>
     </section>
   </main>
-  <footer class="wrap" data-i18n="footer">Open-source educational tool. It does not collect personal data.</footer>
+  <footer class="wrap site-footer">
+    <div>
+      <p class="footer-brand">FEE.fi</p>
+      <p class="footer-copy"><span data-i18n="footerBy">Created by </span><a href="https://github.com/XeUby" target="_blank" rel="noopener noreferrer">Boris</a>. <span data-i18n="footerOpenSource">This website is open source.</span></p>
+      <p class="footer-privacy" data-i18n="footerPrivacy">Calculations stay on your device; this website does not collect personal data. Please do not include personal information in feedback.</p>
+    </div>
+    <div class="footer-links" aria-label="Project links">
+      <a href="https://github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence" target="_blank" rel="noopener noreferrer" data-i18n="sourceCode">View source code</a>
+      <a href="https://github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/issues/new?template=bug_report.md" target="_blank" rel="noopener noreferrer" data-i18n="reportIssue">Report an issue</a>
+      <a href="https://github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/issues/new?template=improvement.md" target="_blank" rel="noopener noreferrer" data-i18n="suggestImprovement">Suggest an improvement</a>
+    </div>
+  </footer>
 
   <script src="i18n.js"></script>
   <script>

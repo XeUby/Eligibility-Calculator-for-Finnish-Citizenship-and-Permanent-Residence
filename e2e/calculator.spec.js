@@ -73,6 +73,16 @@ test("shows the published application and YKI fees without inventing a citizensh
   await expect(costs).toContainText("The fee has not been published by Migri yet.");
 });
 
+test("offers a privacy-preserving feedback route and project source", async ({ page }) => {
+  await page.goto("/");
+  const footer = page.locator("footer");
+  await expect(footer).toContainText("Created by Boris");
+  await expect(footer).toContainText("does not collect personal data");
+  await expect(footer.getByRole("link", { name: "View source code" })).toHaveAttribute("href", /XeUby\/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence$/);
+  await expect(footer.getByRole("link", { name: "Report an issue" })).toHaveAttribute("href", /issues\/new\?template=bug_report\.md$/);
+  await expect(footer.getByRole("link", { name: "Suggest an improvement" })).toHaveAttribute("href", /issues\/new\?template=improvement\.md$/);
+});
+
 test("translates every static calculator string in each advertised language", async ({ page }) => {
   await page.goto("/");
   const readStrings = () => page.locator("[data-i18n]").evaluateAll((elements) =>
