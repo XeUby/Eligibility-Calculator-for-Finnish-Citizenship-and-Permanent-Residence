@@ -98,6 +98,31 @@ window.i18n = (() => {
     errPermitOrder:"Ett tillstånds slutdatum kan inte vara före startdatumet.",errTripDates:"Ange båda datumen för varje resa eller ta bort den tomma raden.",
     errTripOrder:"Återresedatumet kan inte vara före avresedatumet."
   });
+  Object.assign(auxiliary.ar, {
+    residenceIntro:"أضف جميع فترات التصاريح المتواصلة ذات الصلة بحسابك.",tripsIntro:"اختياري، لكن أضف الرحلات خلال الفترة التي تريد تقييمها.",
+    permitType:"نوع التصريح",continuous:"متواصل",temporary:"مؤقت",permanent:"دائم",
+    startDate:"تاريخ البدء",endDate:"تاريخ الانتهاء",departure:"تاريخ المغادرة",return:"تاريخ العودة",
+    permitHelp:"A = تصريح متواصل، B = تصريح مؤقت، P = تصريح دائم. يُحتسب تاريخ انتهاء التصريح.",
+    tripHelp:"يُحتسب يوم مغادرة فنلندا ويوم العودة منها كأيام إقامة، وفقاً لتعليمات Migri المنشورة.",
+    citStandard:"المسار العادي — 8 سنوات",citLanguage:"مسار اللغة — 5 سنوات",
+    citHint:"يتطلب مسار السنوات الخمس مؤهل اللغة المحدد قانوناً. لا تُحتسب المسارات الخاصة.",
+    prSix:"6 سنوات + لغة B1 + سنتان من العمل",prIncome:"4 سنوات + دخل سنوي يزيد على 40,000 €",
+    prDegree:"4 سنوات + شهادة تعليم عالٍ معترف بها + سنتان من العمل",prLanguage:"4 سنوات + لغة C1 + 3 سنوات من العمل",
+    prHint:"تنطبق هذه المسارات على الطلبات المقدمة في 8 يناير 2026 أو بعده.",
+    conditionLegend:"تأكيد الشروط",conditions:"أؤكد أنني أستوفي الشروط الإضافية للمسار الذي اخترته للإقامة الدائمة.",
+    resultsHelp:"«استيفاء مدة الإقامة» ليس قراراً أو توصية بتقديم طلب.",
+    citizenship:"الجنسية الفنلندية",permanentResidence:"الإقامة الدائمة",creditedTime:"مدة الإقامة المحتسبة",
+    routeRequirement:"متطلب المسار",pathRequirement:"متطلب المسار",optimisticDate:"أقرب تاريخ تقديري",continuousAP:"إقامة A/P متواصلة",
+    reviewed:"قد تتغير القواعد والرسوم. آخر مراجعة: 26 أغسطس 2026.",
+    citApply:"طلب الجنسية للبالغين",citCalculation:"كيف تحسب Migri مدة الإقامة",prPaths:"مسارات تصريح الإقامة الدائمة",
+    residenceRequirements:"متطلبات مدة الإقامة",applyVerify:"التقديم والتحقق",fees:"رسوم المعالجة الحالية",
+    footer:"أداة تعليمية مفتوحة المصدر. لا تجمع بيانات شخصية.",
+    statusGood:"تم استيفاء مدة الإقامة",statusWait:"تحتاج إلى مزيد من الوقت أو الشروط",days:"يوماً",calendarYears:"سنوات تقويمية",
+    calculating:"جارٍ الحساب…",loadError:"تعذر تحميل الحاسبة. حدّث الصفحة وحاول مرة أخرى.",
+    errPermit:"أضف فترة تصريح إقامة واحدة على الأقل.",errPermitDates:"أدخل التاريخين لكل فترة تصريح.",
+    errPermitOrder:"لا يمكن أن يكون تاريخ انتهاء التصريح قبل تاريخ البدء.",errTripDates:"أدخل التاريخين لكل رحلة أو احذف الصف الفارغ.",
+    errTripOrder:"لا يمكن أن يكون تاريخ العودة قبل تاريخ المغادرة."
+  });
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
   return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
 })();
