@@ -27,7 +27,7 @@ jobs:
           go-version: "1.25.x"
       - run: GOOS=js GOARCH=wasm go build -o docs/main.wasm ./cmd/wasm
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: docs
       - id: deployment
