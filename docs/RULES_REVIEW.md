@@ -1,46 +1,47 @@
 # Reviewing rules and public information
 
-FEE.fi is an educational estimator. It must never present itself as a Migri
-service or as a legal decision. The visible review date is a promise to review
-the material, not a guarantee that every visitor meets every immigration rule.
+FinResidence is an independent educational estimator. A completed residence-time estimate is not a Migri decision or a finding that all application conditions are met. The visible review date records a source review, not a guarantee about a visitor's case.
 
-## When to review
+Last reviewed: **5 October 2026**.
 
-Review at least once per quarter, and immediately after a relevant Migri,
-Ministry of the Interior, Parliament or Finnish National Agency for Education
-announcement. Review before changing any eligibility calculation, fee or
-effective-date statement.
+## Review record: 5 October 2026
 
-## Required official sources
+The review uses current detailed Migri application instructions when an older amendment summary is less precise. Information pages and the calculator must distinguish enacted future changes from proposals.
+
+- Citizenship civic knowledge: Parliament has approved the change taking effect on **1 January 2027**; it applies to applications submitted from **1 March 2027**. The usual citizenship test applies to ages 18–64, with official alternatives and possible exemptions. The calculator only warns about this requirement. Do not invent a test fee, booking process or study materials before they are officially published. [Migri announcement](https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027)
+- High-income PR route: the threshold is **at least €40,000**, measured from the most recently completed tax assessment. Add taxable earned and capital income before tax, then subtract taxable social benefits. It is not a current salary estimate or a requirement to earn strictly more than €40,000. The visitor confirms these facts; the calculator does not collect tax data. [Detailed PR application instructions](https://migri.fi/en/application-for-a-permanent-residence-permit)
+- Finnish-degree PR route: eligible qualifications are a Finnish university bachelor's degree, a master's degree from a university or university of applied sciences, or a licentiate/doctoral degree. A university-of-applied-sciences bachelor's degree is excluded. Developing Finnish/Swedish skills can be shown through **A2** or **15 higher-education credits** in those languages, subject to Migri's accepted evidence. The route has no residence-time minimum but still has permit, residence and other conditions. [Current PR path requirements](https://migri.fi/en/permanent-residence-permit)
+- Study-based A permits: previous residence under such a permit may count for permanent residence only after completion of the degree on which that permit was based. Studies alone cannot be the current grounds for granting a permanent permit. The tool cannot establish degree completion or permit grounds from permit letters and dates. [PR residence calculation](https://migri.fi/en/period-of-residence-requirement), [accepted permit grounds](https://migri.fi/en/permanent-residence-permit)
+- PR trips: Migri's continuity guidance requires at least half of the relevant time to have been spent in Finland; reasons for absence and exceptions can affect the assessment. The calculator conservatively checks recorded physical residence in the required calendar window for four/six-year paths and withholds a reliable date if excessive absence needs review. It does not subtract citizenship's 365/90-day allowance from PR. Applications submitted before **8 January 2026** are outside the selected PR paths and must not receive a positive result under the new rules. [PR periods, trips and cut-off](https://migri.fi/en/period-of-residence-requirement)
+- Citizenship calculation safeguards: an initial B period is credited at half before the first A/P period; where that credit is used, at least one uninterrupted A/P year is required by the decision. The estimator conservatively requires it by the selected calculation date. Departure and return days stay in residence time; overlapping absences count once. The preceding-year allowance must be reassessed at a projected application date. A continuous stay abroad of more than five years interrupts residence under §16 and requires review instead of a reliable projected date. The strict statutory threshold takes precedence over shorthand in guidance. [Citizenship residence calculation](https://migri.fi/en/how-to-calculate-the-period-of-residence), [Nationality Act §§15–16](https://www.finlex.fi/en/legislation/2003/359)
+- Fees must be checked against the current adult application pages and OPH YKI information. Preserve the separate citizenship and permanent-permit electronic/paper fees and YKI level fees; do not infer upcoming fees. [Migri processing fees](https://migri.fi/en/processing-fees-and-payment-methods), [OPH YKI registration and fees](https://www.oph.fi/en/education-and-qualifications/registering-yki-test)
+
+## Required primary sources
 
 1. [Migri: citizenship application for adults](https://migri.fi/en/citizenship-for-adults)
-2. [Migri: calculate the period of residence](https://migri.fi/en/how-to-calculate-the-period-of-residence)
-3. [Migri: permanent residence permits](https://migri.fi/en/permanent-residence-permits)
-4. [Migri: 2026 permanent-residence amendments](https://migri.fi/en/amendments-to-aliens-act-regarding-permanent-residence-permits-2026)
-5. [Migri: processing fees](https://migri.fi/en/processing-fees-and-payment-methods)
-6. [Finnish National Agency for Education: YKI registration and fees](https://www.oph.fi/en/education-and-qualifications/registering-yki-test)
+2. [Migri: calculate the citizenship period of residence](https://migri.fi/en/how-to-calculate-the-period-of-residence)
+3. [Migri: permanent residence paths and permit grounds](https://migri.fi/en/permanent-residence-permit)
+4. [Migri: detailed permanent residence application requirements](https://migri.fi/en/application-for-a-permanent-residence-permit)
+5. [Migri: PR periods, studies and trips](https://migri.fi/en/period-of-residence-requirement)
+6. [Migri: 2026 permanent-residence amendments](https://migri.fi/en/amendments-to-aliens-act-regarding-permanent-residence-permits-2026)
+7. [Migri: processing fees](https://migri.fi/en/processing-fees-and-payment-methods)
+8. [OPH: YKI registration and fees](https://www.oph.fi/en/education-and-qualifications/registering-yki-test)
+9. [Migri: citizenship civic-knowledge change and application-date transition](https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027)
 
-## Review checklist
+## When and how to review
 
-- Confirm application-date cut-offs, residence periods, absence limits and
-  which permit types count.
-- Confirm every permanent-residence route and explicitly record which extra
-  conditions the calculator cannot verify.
-- Confirm fees and test information; remove any figure that is not published
-  by an official source.
-- Update the visible date in `docs/i18n.js`, links in `docs/index.html`, and
-  the source list in `README.md`.
-- Change the Go rule tests when and only when the underlying legal rule has
-  changed. Include the official source URL in the pull request description.
-- Update all ten language strings for every changed user-facing sentence.
-- Run `go test ./...`, build `docs/main.wasm`, and run the browser test suite.
-- Record a concise entry in the pull request or commit message describing what
-  changed, the source checked, and the effective date.
+Review at least quarterly and immediately after a relevant announcement by Migri, the Ministry of the Interior, Parliament or OPH. Review again before releasing a rule, fee or effective-date change. Successful link checks only show that a URL responds; they do not establish that its legal content is unchanged.
 
-## What requires legal review before modelling
+- Confirm legal entry-into-force dates separately from application-date cut-offs, plus residence periods, permit types, trip treatment and exceptions.
+- Review each path's language, work, income, degree and ongoing permit-ground conditions. Record which are shown as guidance, explicitly confirmed by the visitor, calculated, or outside scope.
+- Use current detailed application guidance if a press release or older summary conflicts; record the discrepancy and primary source. Seek specialist review if it remains unresolved.
+- Confirm published fees/test details. Remove unsupported amounts and label enacted future changes accurately.
+- Update the visible review date and translations in `docs/i18n.js`, source links in `docs/index.html`, this record and `README.md` together.
+- Add or adjust meaningful Go boundary tests for legal changes and calculation corrections. Include a source URL and the effective/application date in the commit or pull request.
+- Update all ten languages for every changed user-facing sentence, including result warnings and route conditions.
+- Run Go tests, build the WASM application with the matching `wasm_exec.js`, and run the Chromium/iPhone WebKit suite. Check source links separately. After release, run the independent public-site health check.
+- Record what was checked, what changed, known limitations and the review date. Do not advance a review date merely because an automated workflow succeeded.
 
-Do not add a new rule merely because a user reports it. Seek a current primary
-source before modelling special citizenship routes, exceptions, EU/free
-movement cases, international protection, children, income/livelihood,
-integrity, criminal waiting periods, permit grounds, or case-specific
-derogations.
+## Facts outside automatic eligibility assessment
+
+New modelling of special citizenship routes, children, EU/free movement, P-EU, international protection, identity, livelihood, integrity, criminal waiting periods, degree recognition, work-history exceptions, permit grounds or case-specific derogations requires current primary sources and a deliberate scope review. Until those facts are verified, show clear limits or require Migri's assessment rather than converting missing facts into a positive legal outcome.

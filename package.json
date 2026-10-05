@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "scripts": {
     "test:e2e": "playwright test",
-    "test:links": "node scripts/check-links.mjs"
+    "test:links": "node scripts/check-links.mjs",
+    "test:site": "node scripts/check-site.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.55.0"
+    "@playwright/test": "1.63.0"
   }
 }

@@ -6,19 +6,20 @@ const sourceFiles = ["docs/index.html", "docs/RULES_REVIEW.md"];
 const urlPattern = /https?:\/\/[^\s"'<>)]+/g;
 const timeoutMs = 15_000;
 const ownHostnames = new Set(["finresidence.fi", "www.finresidence.fi"]);
+const svgNamespace = "http://www.w3.org/2000/svg";
 const execFileAsync = promisify(execFile);
 
 const contents = await Promise.all(sourceFiles.map((file) => readFile(file, "utf8")));
 const urls = [...new Set(contents
   .flatMap((content) => content.match(urlPattern) ?? [])
-  .filter((url) => !ownHostnames.has(new URL(url).hostname)))].sort();
+  .filter((url) => url !== svgNamespace && !ownHostnames.has(new URL(url).hostname)))].sort();
 
 if (!urls.length) {
   throw new Error("No external source URLs were found.");
 }
 
 async function request(url, method) {
-  const args = ["--location", "--fail", "--silent", "--show-error", "--max-time", String(timeoutMs / 1_000), "--user-agent", "FEE.fi-link-check/1.0 (+https://github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence)", "--write-out", "%{http_code}"];
+  const args = ["--location", "--fail", "--silent", "--show-error", "--max-time", String(timeoutMs / 1_000), "--user-agent", "FinResidence-link-check/1.0 (+https://github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence)", "--write-out", "%{http_code}"];
   if (method === "HEAD") args.push("--head");
   else args.push("--output", process.platform === "win32" ? "NUL" : "/dev/null");
   args.push(url);
