@@ -111,14 +111,28 @@ test("fits translated path details and a completed estimate at phone and tablet 
       await page.locator("#language").selectOption(locale);
       await expect(page.locator("#pr-details")).not.toBeEmpty();
       await expect(page.locator("#results")).toBeVisible();
-      const fits = await page.locator("body").evaluate((body) => {
+      const layout = await page.locator("body").evaluate((body) => {
         const viewport = document.documentElement.clientWidth;
         const details = document.querySelector("#pr-details");
         const results = document.querySelector("#results");
-        return body.scrollWidth <= viewport + 1 && document.documentElement.scrollWidth <= viewport + 1
+        const fits = body.scrollWidth <= viewport + 1 && document.documentElement.scrollWidth <= viewport + 1
           && details.scrollWidth <= details.clientWidth + 1 && results.scrollWidth <= results.clientWidth + 1;
+        return {
+          fits, viewport, body: body.scrollWidth, document: document.documentElement.scrollWidth,
+          details: { client: details.clientWidth, scroll: details.scrollWidth },
+          results: { client: results.clientWidth, scroll: results.scrollWidth },
+          overflowing: fits ? [] : [...document.querySelectorAll("body *")].filter((element) => {
+            const box = element.getBoundingClientRect();
+            return box.width > 0 && !element.classList.contains("sr-only") && getComputedStyle(element).overflowX === "visible"
+              && (box.right > viewport + 1 || box.left < -1 || element.scrollWidth > element.clientWidth + 1);
+          }).slice(-20).map((element) => ({
+            element: `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ""}${element.className ? `.${String(element.className).split(" ").join(".")}` : ""}`,
+            text: element.textContent.trim().slice(0, 100), client: element.clientWidth, scroll: element.scrollWidth,
+            left: element.getBoundingClientRect().left, right: element.getBoundingClientRect().right
+          }))
+        };
       });
-      expect(fits, `${locale} form, long path details and result must fit ${width}px`).toBeTruthy();
+      expect(layout.fits, `${locale} form, long path details and result must fit ${width}px: ${JSON.stringify(layout)}`).toBeTruthy();
     }
   }
 });
