@@ -59,6 +59,7 @@ jobs:
     if: needs.verify.outputs.eligible == 'true'
     permissions:
       contents: read
+      actions: read
       pages: write
       id-token: write
     environment:
@@ -80,7 +81,56 @@ jobs:
           cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" docs/wasm_exec.js
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
+        id: pages-artifact
         with:
           path: docs
+      - name: Wait for the exact Pages artifact to become visible
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SHA: ${{ needs.verify.outputs.sha }}
+          EXPECTED_ARTIFACT_ID: ${{ steps.pages-artifact.outputs.artifact_id }}
+        run: |
+          set -euo pipefail
+          [[ "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$EXPECTED_ARTIFACT_ID" =~ ^[0-9]+$ ]]
+          deadline=$((SECONDS + 180))
+          observations=0
+          while (( SECONDS < deadline )); do
+            request_timeout=$((deadline - SECONDS))
+            if (( request_timeout <= 0 )); then
+              break
+            fi
+            if (( request_timeout > 10 )); then
+              request_timeout=10
+            fi
+            if artifacts="$(timeout "${request_timeout}s" gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?per_page=100")"; then
+              visible="$(jq -r --arg sha "$TARGET_SHA" --arg run "$GITHUB_RUN_ID" --arg id "$EXPECTED_ARTIFACT_ID" '[.artifacts[] | select(.name == "github-pages" and .expired == false and (.workflow_run.id | tostring) == $run and .workflow_run.head_sha == $sha)] | (length == 1 and (.[0].id | tostring) == $id)' <<< "$artifacts")"
+              if [[ "$visible" == "true" ]]; then
+                observations=$((observations + 1))
+                if (( observations >= 2 )); then
+                  echo "The exact Pages artifact is visible and ready for publication."
+                  exit 0
+                fi
+                echo "Pages artifact found; confirming visibility after propagation."
+              else
+                observations=0
+                echo "Waiting for the exact unexpired Pages artifact."
+              fi
+            else
+              observations=0
+              echo "Artifact metadata is temporarily unavailable; retrying."
+            fi
+            remaining=$((deadline - SECONDS))
+            if (( remaining <= 0 )); then
+              break
+            fi
+            if (( remaining < 10 )); then
+              sleep "$remaining"
+            else
+              sleep 10
+            fi
+          done
+          echo "::error::The exact unexpired github-pages artifact did not become consistently visible within three minutes. Publication stopped; retry this workflow after the artifact service recovers."
+          exit 1
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
