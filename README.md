@@ -87,7 +87,7 @@ The intended primary address is `https://finresidence.fi/`. Domainhotelli remain
 
 Configure the domain in this order:
 
-1. In the repository's [Settings → Pages](https://github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/settings/pages), select **GitHub Actions** as the source and set the custom domain to `finresidence.fi`. Keep the matching `docs/CNAME` and site metadata in the repository. Verify domain ownership in GitHub with its account-specific TXT record when requested.
+1. In the repository's [Settings → Pages](https://github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence/settings/pages), select **GitHub Actions** as the source and set the custom domain to `finresidence.fi`. Keep the matching `docs/CNAME` and site metadata in the repository. Verify domain ownership in the owner's GitHub account **Settings → Pages** with its account-specific TXT record. Keep that TXT record after verification: it protects the domain from being claimed by another GitHub account if the repository binding is accidentally removed.
 2. Add `finresidence.fi` to Cloudflare on the **Free** plan and create the records below with **DNS only** (grey cloud) and TTL **Auto**. Preserve any unrelated mail/verification records; replace conflicting parking records for the apex and `www`.
 3. If registrar DNSSEC is active, turn it off before migration. In Domainhotelli **Nameservers**, replace the existing nameservers with the two exact names assigned to this zone by Cloudflare. These are account/zone-specific; do not copy nameserver names from another domain or put GitHub's IPs into the nameserver fields.
 4. Wait until Cloudflare shows the zone as **Active** and GitHub's DNS check passes. Then enable **Enforce HTTPS** in GitHub Pages. Certificate issuance and DNS propagation can take time; the registrar's SSL indicator is not the certificate control for this website.
@@ -107,7 +107,11 @@ Configure the domain in this order:
 
 Do not add a wildcard record. In DNS-only mode traffic goes directly to GitHub Pages, so Cloudflare's proxy SSL settings do not control the website certificate. See [GitHub's custom-domain instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) and [Cloudflare's nameserver migration instructions](https://developers.cloudflare.com/dns/zone-setups/full-setup/setup/).
 
+The Cloudflare nameservers assigned to this zone on 5 October 2026 are `boyd.ns.cloudflare.com` and `cloe.ns.cloudflare.com`. The GitHub ownership TXT name is `_github-pages-challenge-XeUby.finresidence.fi`; obtain its value from the owner's GitHub Pages settings. These details are specific to this deployment, not a template for another account or domain.
+
 Publishing is automatic after successful **CI** for the exact current `main` commit. The deploy workflow validates the commit through GitHub's API, skips stale results, checks out that SHA, builds WASM with its matching Go runtime and publishes `docs/`. A manual deploy uses the same successful-CI check; run CI first if that commit has no passing result. Routine code changes need only a tested commit and push; DNS is not changed for releases.
+
+For a release regression, revert the affected change with a new commit on `main`, run the tests and push it. The revert must pass the same CI gate before publication. Do not force-push history, disable checks or change DNS to roll back application code. Check the **Deploy GitHub Pages** and **Site health** results after every release; a successful upload alone does not confirm working HTTPS or calculation assets.
 
 ## Contributions and feedback
 
