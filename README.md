@@ -32,7 +32,7 @@ Parliament has approved the citizenship civic-knowledge change: the Act changes 
 
 ## Local development
 
-Use Go 1.25 or newer and Node.js 24. Run commands from the repository root.
+Use Go 1.27.1 or a newer supported patch and Node.js 24. The module declares this minimum so Go's automatic toolchain selection can obtain the matching compiler when necessary. CI and production builds use the supported Go 1.27 release line and copy its matching WebAssembly runtime. Run commands from the repository root.
 
 PowerShell:
 

@@ -73,7 +73,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.x"
+          go-version: "1.27.x"
       - name: Build the tested WebAssembly application and matching runtime
         run: |
           GOOS=js GOARCH=wasm go build -o docs/main.wasm ./cmd/wasm
