@@ -68,6 +68,24 @@ test("translates all primary Russian form controls", async ({ page }) => {
   await expect(page.locator("[data-i18n=tripHelp]")).toHaveText(/День выезда из Финляндии/);
 });
 
+test("retranslates visible validation and draft messages without losing inputs", async ({ page }) => {
+  await page.goto("/");
+  await fillPermit(page, 0, "A", "2026-01-02", "2026-01-01");
+  await page.locator(".primary").click();
+  await page.locator("#save-draft").click();
+  for (const locale of locales) {
+    await page.locator("#language").selectOption(locale);
+    const messages = await page.evaluate((locale) => ({
+      error: window.i18n.t(locale, "errPermitOrder"),
+      draft: window.i18n.t(locale, "draftSaved")
+    }), locale);
+    await expect(page.locator("#form-error")).toHaveText(messages.error);
+    await expect(page.locator("#draft-status")).toHaveText(messages.draft);
+    await expect(page.locator(".permit-start")).toHaveValue("2026-01-02");
+    await expect(page.locator(".permit-end")).toHaveValue("2026-01-01");
+  }
+});
+
 test("does not fall back to English for the Nepali calculator controls", async ({ page }) => {
   await page.goto("/");
   await page.getByLabel("Language").selectOption("ne");

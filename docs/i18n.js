@@ -433,6 +433,7 @@ window.i18n = (() => {
       prDetailForeign: "4 sano oo deganaansho la aqbali karo, master, licentiate ama doctorate lagu dhammaystay meel ka baxsan Finland oo Finland laga aqoonsan yahay, iyo 2 sano oo taariikh shaqo ah gudaha Finland.",
       prDetailLanguage: "4 sano oo deganaansho la aqbali karo, Finnish ama Swedish C1, iyo 3 sano oo taariikh shaqo ah gudaha Finland.",
       faqTripsAnswer: "Maalmaha bixitaanka iyo soo noqoshada waa maalmo deganaansho; maalmaha isku beegan hal mar ayaa la tiriyaa. Jinsiyadda waxaa lagu dabaqaa xuduudaha la daabacay ee 365 maalmood guud ahaan iyo 90 maalmood sanadkii ugu dambeeyay. Deganaanshaha joogtada ahi wuxuu leeyahay xeer gaar ah: caadi ahaan waa inaad Finland ku noolaataa ugu yaraan kala bar muddada loo baahan yahay. Maqnaanshaha dheer iyo ka-reebisyada Migri ayaa qiimaysa; jarista jinsiyadda laguma dabaqo deganaanshaha joogtada ah.",
+      faqDecisionAnswer: "Mar walba ma aha. Tani ma aha talo aad codsi ku gudbiso. Ka hubi Migri dhammaan shuruudaha hadda jira ka hor intaadan codsan.",
       warnings: {
         citizenship_b_credit_year: "Tirinta muddada B waxay u baahan tahay ugu yaraan hal sano oo aan kala go' lahayn oo oggolaansho A/P ah ka hor go'aanka Migri. Qiyaastan taxaddarka leh waxay u baahan tahay in sannadkaas la dhammaystiro taariikhda la doortay.",
         citizenship_later_b: "Muddooyinka B ee ka dambeeya oggolaanshahaaga A/P ee ugu horreeya laguma tiriyo qiyaastan, waxayna dib u dhigaan taariikhda jinsiyadda la saadaaliyay.",
@@ -494,7 +495,7 @@ window.i18n = (() => {
     Object.assign(target, values);
     target.warnings = {...target.warnings, ...warnings};
   });
-  auxiliary.en.warnings = en.warnings;
+  auxiliary.en.warnings = {...auxiliary.en.warnings, ...en.warnings};
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
   return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
 })();

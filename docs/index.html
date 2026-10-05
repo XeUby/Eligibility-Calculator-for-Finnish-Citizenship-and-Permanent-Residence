@@ -293,12 +293,15 @@
     const draftKey = "finresidence-calculator-draft-v1";
     const legacyDraftKey = "fee.fi-calculator-draft-v1";
     const savedDraft = readDraft();
+    let formErrorKey, draftStatusKey;
     language.value = savedDraft?.language && window.i18n.languages.some(({ code }) => code === savedDraft.language) ? savedDraft.language : "en";
     language.addEventListener("change", () => {
       const values = rowsToValues();
       permitList.replaceChildren(); absenceList.replaceChildren();
       translate();
       values.permits.forEach(permitRow); values.absences.forEach(absenceRow);
+      setFormError(formErrorKey);
+      if (draftStatusKey) setDraftStatus(draftStatusKey);
       if (lastResult) renderResult(lastResult);
     });
     translate();
@@ -362,7 +365,8 @@
         return draft && draft.version === 1 && Array.isArray(draft.permits) && Array.isArray(draft.absences) ? draft : null;
       } catch (_) { return null; }
     }
-    function setDraftStatus(key) { $("#draft-status").textContent = window.i18n.t(language.value, key); }
+    function setFormError(key) { formErrorKey = key; $("#form-error").textContent = key ? window.i18n.t(language.value, key) : ""; }
+    function setDraftStatus(key) { draftStatusKey = key; $("#draft-status").textContent = window.i18n.t(language.value, key); }
     function saveDraft() {
       try {
         const values = rowsToValues();
@@ -374,21 +378,20 @@
       try { localStorage.removeItem(draftKey); localStorage.removeItem(legacyDraftKey); } catch (_) { setDraftStatus("draftUnavailable"); return; }
       permitList.replaceChildren(); absenceList.replaceChildren();
       $("#citizenship-route").value = "standard"; $("#pr-path").value = "six_years"; $("#as-of").value = today; $("#conditions-met").checked = false;
-      permitRow(); invalidateResult(); $("#form-error").textContent = "";
+      permitRow(); invalidateResult(); setFormError();
       updatePathDetails();
       setDraftStatus("draftCleared");
     }
     $("#save-draft").addEventListener("click", saveDraft);
     $("#clear-draft").addEventListener("click", clearDraft);
     function validate({ permits, absences }) {
-      const t = (key) => window.i18n.t(language.value, key);
-      if (!$("#as-of").value || !$("#as-of").validity.valid) return t("errAsOf");
-      if (!permits.length) return t("errPermit");
-      for (const row of permits) { if (!row.start || !row.end) return t("errPermitDates"); if (row.end < row.start) return t("errPermitOrder"); }
+      if (!$("#as-of").value || !$("#as-of").validity.valid) return "errAsOf";
+      if (!permits.length) return "errPermit";
+      for (const row of permits) { if (!row.start || !row.end) return "errPermitDates"; if (row.end < row.start) return "errPermitOrder"; }
       const seenTrips = new Set();
       for (const row of absences) {
-        if (!row.start || !row.end) return t("errTripDates"); if (row.end < row.start) return t("errTripOrder");
-        const key = `${row.start}:${row.end}`; if (seenTrips.has(key)) return t("errTripDuplicate"); seenTrips.add(key);
+        if (!row.start || !row.end) return "errTripDates"; if (row.end < row.start) return "errTripOrder";
+        const key = `${row.start}:${row.end}`; if (seenTrips.has(key)) return "errTripDuplicate"; seenTrips.add(key);
       }
       return "";
     }
@@ -418,7 +421,7 @@
     $("#calculator").addEventListener("submit", async (event) => {
       event.preventDefault();
       const values = rowsToValues(), error = validate(values);
-      $("#form-error").textContent = error;
+      setFormError(error);
       if (error) return;
       const revision = inputRevision;
       const selection = { asOf: $("#as-of").value, citizenshipRoute: $("#citizenship-route").value, prPath: $("#pr-path").value, conditionsMet: $("#conditions-met").checked };
@@ -431,7 +434,7 @@
         lastResult = result;
         renderResult(result);
         $("#results").hidden = false; $("#results").scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-      } catch (failure) { console.error("Calculator initialisation failed", failure); $("#form-error").textContent = window.i18n.t(language.value, "loadError"); }
+      } catch (failure) { console.error("Calculator initialisation failed", failure); setFormError("loadError"); }
       finally { submit.disabled = false; submit.textContent = window.i18n.t(language.value, "calculate"); }
     });
   </script>
