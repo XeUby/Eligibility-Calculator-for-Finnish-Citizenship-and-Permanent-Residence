@@ -4,7 +4,7 @@ about: Share an idea for improving the calculator or website
 title: "[Idea] "
 ---
 
-Thank you for sharing an idea for FEE.fi.
+Thank you for sharing an idea for FinResidence.
 
 Please do not include passport, residence-permit, contact, or other personal information.
 

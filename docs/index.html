@@ -10,14 +10,14 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="site.webmanifest">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="FEE.fi">
+  <meta property="og:site_name" content="FinResidence">
   <meta property="og:url" content="https://finresidence.fi/">
   <meta property="og:title" content="Finland eligibility estimator" id="social-title">
   <meta property="og:description" content="A private, browser-based estimate of Finnish citizenship and permanent residence time requirements." id="social-description">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Finland eligibility estimator" id="twitter-title">
   <meta name="twitter:description" content="A private, browser-based estimate of Finnish citizenship and permanent residence time requirements." id="twitter-description">
-  <title>Finland eligibility estimator</title>
+  <title>FinResidence — Finland eligibility estimator</title>
   <script src="wasm_exec.js"></script>
   <style>
     :root { --ink:#13233d; --muted:#56657a; --line:#d8e1ec; --canvas:#f5f8fc; --surface:#fff; --blue:#0858bd; --blue-dark:#034190; --teal:#006b62; --teal-bg:#e6f5f1; --amber:#8a4b00; --amber-bg:#fff3db; --red:#a3262a; --radius:16px; }
@@ -30,6 +30,7 @@
     .wrap { width:min(1100px, calc(100% - 32px)); margin:auto; }
     header { color:#fff; background:linear-gradient(125deg,#063879,#08729b); padding:42px 0 36px; }
     header p { max-width:730px; margin:9px 0 0; color:#dcefff; }
+    .hero-brand { margin:0 0 10px; color:#fff; font-size:1rem; font-weight:800; letter-spacing:.04em; }
     h1 { min-width:0; margin:0; font-size:clamp(2rem,5vw,3.25rem); letter-spacing:-.04em; overflow-wrap:anywhere; }
     h2 { font-size:1.45rem; letter-spacing:-.02em; margin:0; }
     h3 { font-size:1.05rem; margin:0 0 6px; }
@@ -46,8 +47,10 @@
     .history-row { display:grid; grid-template-columns:minmax(105px,.7fr) 1fr 1fr auto; align-items:end; gap:12px; padding:14px; background:#f8fbff; border:1px solid var(--line); border-radius:11px; }
     .absence-row { grid-template-columns:1fr 1fr auto; }
     label { display:grid; gap:5px; font-weight:650; font-size:.89rem; }
-    input, select { min-width:0; min-height:44px; padding:10px 11px; border:1px solid #9aabba; border-radius:8px; color:var(--ink); background:#fff; font:inherit; }
-    input[type="checkbox"] { width:19px; height:19px; accent-color:var(--blue); }
+    input, select { min-width:0; min-height:44px; padding:10px 11px; border:1px solid #9aabba; border-radius:8px; color:var(--ink); background:#fff; font:inherit; font-size:1rem; }
+    select { width:100%; max-width:100%; appearance:none; -webkit-appearance:none; overflow:hidden; text-overflow:ellipsis; padding-inline-end:34px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%2356657a' stroke-width='2'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; }
+    [dir=rtl] select { background-position:left 12px center; }
+    input[type="checkbox"] { width:19px; height:19px; min-height:19px; margin:3px 0; accent-color:var(--blue); }
     .check { grid-template-columns:auto 1fr; align-items:start; font-weight:500; font-size:.94rem; }
     button { min-height:44px; font:inherit; font-weight:700; border-radius:9px; border:1px solid transparent; cursor:pointer; padding:11px 15px; }
     button:disabled { cursor:wait; opacity:.72; }
@@ -58,7 +61,10 @@
     .remove { color:var(--red); background:#fff; border-color:#ebb4b5; padding:10px 12px; }
     .remove:hover { background:#fff3f3; }
     .choices { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
-    .choices > div { display:grid; min-width:0; gap:8px; }
+    .choices > div { display:grid; align-content:start; min-width:0; gap:8px; }
+    .path-details { padding:12px; border-left:3px solid var(--teal); background:var(--teal-bg); border-radius:6px; overflow-wrap:anywhere; }
+    [dir=rtl] .path-details { border-left:0; border-right:3px solid var(--teal); }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
     .form-error { min-height:1.5em; margin:14px 0 0; color:var(--red); font-weight:650; }
     .results[hidden] { display:none; }
     .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
@@ -102,6 +108,7 @@
   <a class="skip-link" href="#main-content" data-i18n="skipToContent">Skip to calculator</a>
   <header>
     <div class="wrap">
+      <p class="hero-brand">FinResidence</p>
       <div class="hero-head"><h1 data-i18n="title">Finland eligibility estimator</h1><label class="language"><span class="sr-only" data-i18n="languageLabel">Language</span><select id="language" aria-label="Language"></select></label></div>
       <p data-i18n="intro">Estimate the residence-time part of Finnish citizenship and permanent-residence applications. Calculations run privately in this browser; no data is sent or stored.</p>
     </div>
@@ -120,6 +127,7 @@
         </div>
         <div id="permit-list" class="history"></div>
         <p class="help" data-i18n="permitHelp">A = continuous permit, B = temporary permit, P = permanent permit. Permit end dates are included.</p>
+        <p class="help" data-i18n="residenceStartHelp">If your permit started before you arrived in Finland, use your actual arrival date as the first start date. Do not count days before both residence and permit validity began.</p>
       </section>
 
       <section class="panel" aria-labelledby="absence-heading">
@@ -144,14 +152,15 @@
           </div>
           <div>
             <label for="pr-path" data-i18n="prRoute">Permanent residence path</label>
-            <select id="pr-path">
+            <select id="pr-path" aria-describedby="pr-details">
               <option value="six_years" data-i18n="prSix">6 years + B1 language + 2 years’ work</option>
-              <option value="high_income" data-i18n="prIncome">4 years + annual income over €40,000</option>
+              <option value="high_income" data-i18n="prIncome">4 years + annual income of at least €40,000</option>
               <option value="degree_finland" data-i18n="prFinlandDegree">Finnish degree route — no residence-time requirement</option>
               <option value="foreign_degree" data-i18n="prDegree">4 years + recognised higher degree + 2 years’ work</option>
               <option value="excellent_language" data-i18n="prLanguage">4 years + C1 language + 3 years’ work</option>
             </select>
             <p class="field-help" data-i18n="prHint">These paths apply to applications submitted on or after 8 January 2026.</p>
+            <p id="pr-details" class="field-help path-details" aria-live="polite"></p>
           </div>
           <div>
             <label for="as-of" data-i18n="calculateAsOf">Calculate as of</label>
@@ -161,6 +170,7 @@
           <div>
             <span class="sr-only" data-i18n="conditionLegend">Condition confirmation</span>
             <label class="check"><input id="conditions-met" type="checkbox"><span data-i18n="conditions">I confirm that I meet the additional conditions shown for my chosen permanent-residence path.</span></label>
+            <p class="field-help" data-i18n="studyHelp">For permanent residence, A-permit time based on studies counts only if you have completed the degree. Permit grounds and other conditions still need Migri's assessment.</p>
           </div>
         </div>
         <p id="form-error" class="form-error" role="alert" aria-live="assertive"></p>
@@ -232,17 +242,17 @@
         <span data-i18n="upcomingText">Applicants aged 18–64 will need to meet a civic-knowledge requirement. Migri says this can normally be met with the new citizenship test, with specified alternatives and exemptions.</span> <a href="https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027" target="_blank" rel="noopener noreferrer" data-i18n="officialUpdate">Read Migri’s official update</a>.
       </section>
       <h2 id="sources-heading" data-i18n="officialInfo">Official information</h2>
-      <p class="help" data-i18n="reviewed">Rules and fees can change. Last reviewed: 26 August 2026.</p>
+      <p class="help" data-i18n="reviewed">Rules and fees can change. Last reviewed: 5 October 2026.</p>
       <div class="resources">
         <article class="resource"><h3 data-i18n="citizenship">Citizenship</h3><p><a href="https://migri.fi/en/citizenship-for-adults" target="_blank" rel="noopener noreferrer" data-i18n="citApply">Citizenship application for adults</a></p><p><a href="https://migri.fi/en/how-to-calculate-the-period-of-residence" target="_blank" rel="noopener noreferrer" data-i18n="citCalculation">How Migri calculates residence</a></p></article>
-        <article class="resource"><h3 data-i18n="permanentResidence">Permanent residence</h3><p><a href="https://migri.fi/en/permanent-residence-permits" target="_blank" rel="noopener noreferrer" data-i18n="prPaths">Permanent residence permit paths</a></p><p><a href="https://migri.fi/en/amendments-to-aliens-act-regarding-permanent-residence-permits-2026" target="_blank" rel="noopener noreferrer" data-i18n="residenceRequirements">Residence-period requirements</a></p></article>
+        <article class="resource"><h3 data-i18n="permanentResidence">Permanent residence</h3><p><a href="https://migri.fi/en/permanent-residence-permit" target="_blank" rel="noopener noreferrer" data-i18n="prPaths">Permanent residence permit paths</a></p><p><a href="https://migri.fi/en/period-of-residence-requirement" target="_blank" rel="noopener noreferrer" data-i18n="residenceRequirements">Residence-period requirements</a></p></article>
         <article class="resource"><h3 data-i18n="applyVerify">Apply and verify</h3><p><a href="https://enterfinland.fi" target="_blank" rel="noopener noreferrer">Enter Finland</a></p><p><a href="https://migri.fi/en/processing-fees-and-payment-methods" target="_blank" rel="noopener noreferrer" data-i18n="fees">Current processing fees</a></p></article>
       </div>
     </section>
   </main>
   <footer class="wrap site-footer">
     <div>
-      <p class="footer-brand">FEE.fi</p>
+      <p class="footer-brand">FinResidence</p>
       <p class="footer-copy"><span data-i18n="footerBy">Created by </span><a href="https://github.com/XeUby" target="_blank" rel="noopener noreferrer">Boris</a>. <span data-i18n="footerOpenSource">This website is open source.</span></p>
       <p class="footer-privacy" data-i18n="footerPrivacy">Calculations stay on your device; this website does not collect personal data. Please do not include personal information in feedback.</p>
     </div>
@@ -266,16 +276,22 @@
       document.querySelectorAll("[data-i18n]").forEach((element) => { element.textContent = window.i18n.t(locale, element.dataset.i18n); });
       document.querySelectorAll("[data-i18n-aria]").forEach((element) => { element.setAttribute("aria-label", window.i18n.t(locale, element.dataset.i18nAria)); });
       language.setAttribute("aria-label", window.i18n.t(locale, "languageLabel"));
-      document.title = window.i18n.t(locale, "title");
+      document.title = "FinResidence — " + window.i18n.t(locale, "title");
       const description = window.i18n.t(locale, "siteDescription");
       $("meta[name=description]").content = description;
       $("#social-title").content = document.title;
       $("#social-description").content = description;
       $("#twitter-title").content = document.title;
       $("#twitter-description").content = description;
+      updatePathDetails();
+    }
+    function updatePathDetails() {
+      const keys = { six_years: "prDetailSix", high_income: "prDetailIncome", degree_finland: "prDetailFinnishDegree", foreign_degree: "prDetailForeign", excellent_language: "prDetailLanguage" };
+      $("#pr-details").textContent = window.i18n.t(language.value, keys[$("#pr-path").value]);
     }
     window.i18n.languages.forEach(({ code, label }) => language.add(new Option(label, code)));
-    const draftKey = "fee.fi-calculator-draft-v1";
+    const draftKey = "finresidence-calculator-draft-v1";
+    const legacyDraftKey = "fee.fi-calculator-draft-v1";
     const savedDraft = readDraft();
     language.value = savedDraft?.language && window.i18n.languages.some(({ code }) => code === savedDraft.language) ? savedDraft.language : "en";
     language.addEventListener("change", () => {
@@ -286,27 +302,34 @@
       if (lastResult) renderResult(lastResult);
     });
     translate();
-    const today = new Date().toISOString().slice(0, 10);
+    const localNow = new Date();
+    const today = `${localNow.getFullYear()}-${String(localNow.getMonth() + 1).padStart(2, "0")}-${String(localNow.getDate()).padStart(2, "0")}`;
     $("#as-of").value = savedDraft?.asOf || today;
     $("#citizenship-route").value = savedDraft?.citizenshipRoute || "standard";
     $("#pr-path").value = savedDraft?.prPath || "six_years";
     $("#conditions-met").checked = Boolean(savedDraft?.conditionsMet);
+    updatePathDetails();
+    $("#pr-path").addEventListener("change", () => { $("#conditions-met").checked = false; updatePathDetails(); });
+    let inputRevision = 0;
+    function invalidateResult() { inputRevision++; lastResult = undefined; $("#results").hidden = true; }
+    $("#calculator").addEventListener("input", invalidateResult);
+    $("#calculator").addEventListener("change", invalidateResult);
     let wasmPromise;
 
     function permitRow(values = {}) {
       const row = document.createElement("div"); row.className = "history-row";
       row.innerHTML = `<label>${window.i18n.t(language.value, "permitType")}<select class="permit-type"><option value="A">A — ${window.i18n.t(language.value, "continuous")}</option><option value="B">B — ${window.i18n.t(language.value, "temporary")}</option><option value="P">P — ${window.i18n.t(language.value, "permanent")}</option></select></label><label>${window.i18n.t(language.value, "startDate")}<input class="permit-start" type="date" required></label><label>${window.i18n.t(language.value, "endDate")}<input class="permit-end" type="date" required></label><button class="remove" type="button">${window.i18n.t(language.value, "remove")}</button>`;
       $(".permit-type", row).value = values.type || "A"; $(".permit-start", row).value = values.start || ""; $(".permit-end", row).value = values.end || "";
-      $(".remove", row).addEventListener("click", () => row.remove()); permitList.append(row);
+      $(".remove", row).addEventListener("click", () => { row.remove(); invalidateResult(); }); permitList.append(row);
     }
     function absenceRow(values = {}) {
       const row = document.createElement("div"); row.className = "history-row absence-row";
       row.innerHTML = `<label>${window.i18n.t(language.value, "departure")}<input class="absence-start" type="date" required></label><label>${window.i18n.t(language.value, "return")}<input class="absence-end" type="date" required></label><button class="remove" type="button">${window.i18n.t(language.value, "remove")}</button>`;
       $(".absence-start", row).value = values.start || ""; $(".absence-end", row).value = values.end || "";
-      $(".remove", row).addEventListener("click", () => row.remove()); absenceList.append(row);
+      $(".remove", row).addEventListener("click", () => { row.remove(); invalidateResult(); }); absenceList.append(row);
     }
-    $("#add-permit").addEventListener("click", () => permitRow());
-    $("#add-absence").addEventListener("click", () => absenceRow());
+    $("#add-permit").addEventListener("click", () => { permitRow(); invalidateResult(); });
+    $("#add-absence").addEventListener("click", () => { absenceRow(); invalidateResult(); });
     const restoredPermits = Array.isArray(savedDraft?.permits) && savedDraft.permits.length ? savedDraft.permits : [{}];
     restoredPermits.forEach(permitRow);
     if (Array.isArray(savedDraft?.absences)) savedDraft.absences.forEach(absenceRow);
@@ -335,7 +358,7 @@
     }
     function readDraft() {
       try {
-        const draft = JSON.parse(localStorage.getItem(draftKey));
+        const draft = JSON.parse(localStorage.getItem(draftKey) || localStorage.getItem(legacyDraftKey));
         return draft && draft.version === 1 && Array.isArray(draft.permits) && Array.isArray(draft.absences) ? draft : null;
       } catch (_) { return null; }
     }
@@ -348,16 +371,18 @@
       } catch (_) { setDraftStatus("draftUnavailable"); }
     }
     function clearDraft() {
-      try { localStorage.removeItem(draftKey); } catch (_) { setDraftStatus("draftUnavailable"); return; }
+      try { localStorage.removeItem(draftKey); localStorage.removeItem(legacyDraftKey); } catch (_) { setDraftStatus("draftUnavailable"); return; }
       permitList.replaceChildren(); absenceList.replaceChildren();
       $("#citizenship-route").value = "standard"; $("#pr-path").value = "six_years"; $("#as-of").value = today; $("#conditions-met").checked = false;
-      permitRow(); lastResult = undefined; $("#results").hidden = true; $("#form-error").textContent = "";
+      permitRow(); invalidateResult(); $("#form-error").textContent = "";
+      updatePathDetails();
       setDraftStatus("draftCleared");
     }
     $("#save-draft").addEventListener("click", saveDraft);
     $("#clear-draft").addEventListener("click", clearDraft);
     function validate({ permits, absences }) {
       const t = (key) => window.i18n.t(language.value, key);
+      if (!$("#as-of").value || !$("#as-of").validity.valid) return t("errAsOf");
       if (!permits.length) return t("errPermit");
       for (const row of permits) { if (!row.start || !row.end) return t("errPermitDates"); if (row.end < row.start) return t("errPermitOrder"); }
       const seenTrips = new Set();
@@ -395,14 +420,17 @@
       const values = rowsToValues(), error = validate(values);
       $("#form-error").textContent = error;
       if (error) return;
+      const revision = inputRevision;
+      const selection = { asOf: $("#as-of").value, citizenshipRoute: $("#citizenship-route").value, prPath: $("#pr-path").value, conditionsMet: $("#conditions-met").checked };
       const submit = $(".primary"); submit.disabled = true; submit.textContent = window.i18n.t(language.value, "calculating");
       try {
         await loadWasm();
-        const result = window.calculateEligibility(values.permits, values.absences, $("#as-of").value, $("#citizenship-route").value, $("#pr-path").value, $("#conditions-met").checked);
+        if (revision !== inputRevision) return;
+        const result = window.calculateEligibility(values.permits, values.absences, selection.asOf, selection.citizenshipRoute, selection.prPath, selection.conditionsMet);
         if (result.error) throw new Error(result.error);
         lastResult = result;
         renderResult(result);
-        $("#results").hidden = false; $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
+        $("#results").hidden = false; $("#results").scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
       } catch (failure) { console.error("Calculator initialisation failed", failure); $("#form-error").textContent = window.i18n.t(language.value, "loadError"); }
       finally { submit.disabled = false; submit.textContent = window.i18n.t(language.value, "calculate"); }
     });

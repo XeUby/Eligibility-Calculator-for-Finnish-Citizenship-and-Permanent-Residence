@@ -4,7 +4,7 @@ about: Report an issue with the calculator or website
 title: "[Bug] "
 ---
 
-Thank you for helping improve FEE.fi.
+Thank you for helping improve FinResidence.
 
 Please do not include passport, residence-permit, contact, or other personal information.
 
