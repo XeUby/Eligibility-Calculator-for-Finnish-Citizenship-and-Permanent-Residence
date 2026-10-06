@@ -11,19 +11,70 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
-  smoke:
-    name: Check public HTTPS site and calculator assets
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+  published:
+    name: Confirm a release was actually published
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 3
+    outputs:
+      ready: ${{ steps.release.outputs.ready }}
+    steps:
+      - name: Ignore successful workflows whose deployment was skipped
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          DEPLOY_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" != "workflow_run" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          [[ "$DEPLOY_RUN_ID" =~ ^[0-9]+$ ]]
+          jobs="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$DEPLOY_RUN_ID/jobs?per_page=100")"
+          published="$(jq -r '[.jobs[] | select(.name == "deploy" and .conclusion == "success") | .steps[] | select(.name == "Publish tested site to GitHub Pages" and .conclusion == "success")] | length > 0' <<< "$jobs")"
+          echo "ready=$published" >> "$GITHUB_OUTPUT"
+          if [[ "$published" != "true" ]]; then
+            echo "No Pages deployment completed; keeping the previous production release without testing an unpublished SHA."
+          fi
+
+  smoke:
+    name: Check public HTTPS site and real WASM calculation
+    needs: published
+    if: needs.published.outputs.ready == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
         with:
+          # A newer main must not supply tests for an older completed release.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           package-manager-cache: false
       - run: npm run test:site
+      - run: npm ci --ignore-scripts
+      - run: npx --no-install playwright install --with-deps chromium
+      - name: Exercise the published calculator and mobile translations
+        env:
+          FINRESIDENCE_EXPECTED_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || '' }}
+        run: npm run test:production
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: production-playwright-report
+          path: |
+            playwright-report/production/
+            test-results/production/
+          if-no-files-found: ignore
+          retention-days: 7

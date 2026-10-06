@@ -62,11 +62,22 @@ Browser tests start their own development server:
 
 ```sh
 npm ci --ignore-scripts
+npm run test:unit
+npm run test:review
 npx --no-install playwright install chromium webkit
 npm run test:e2e
 ```
 
 Linux CI installs the browsers' system dependencies as well. To run only desktop Chromium locally, use `npm run test:e2e -- --project=chromium`. `npm run test:links` checks official/external links; `npm run test:site` checks the public HTTPS site and its essential assets.
+
+`npm run test:production` exercises the live public calculator in Chromium, with invented permit/trip dates only. It needs Chromium installed but starts no development server. To validate the same smoke tests against a running local server before publication:
+
+```powershell
+$env:FINRESIDENCE_SMOKE_BASE_URL = "http://127.0.0.1:8080/"
+try { npm run test:production } finally { Remove-Item Env:FINRESIDENCE_SMOKE_BASE_URL }
+```
+
+The default target is `https://finresidence.fi/`; only the canonical production origin or an explicit loopback server is accepted. HTTPS certificate validation remains enabled. Browser traces, screenshots and videos are disabled for this synthetic production check.
 
 ## Architecture and verification
 
@@ -79,7 +90,13 @@ The engine supplies both adapters with the same calendar calculations, warnings 
 
 CI checks formatting, Go vet, race-enabled Go tests, WASM build and browser flows on pull requests and `main`. Playwright runs the suite in Chromium and iPhone-sized WebKit on Linux, covering calculation, validation, drafts, all ten locales and responsive layout. WebKit emulation supplements testing on a real iPhone; it is not a device certification. Failure screenshots, traces and an HTML report are retained for 14 days.
 
-Dependencies are installed from the committed npm lock with `npm ci`. Dependabot reviews Go/npm/Actions weekly; CodeQL scans Go on pull requests, `main` and a weekly schedule. External-source checks are weekly/manual. The separate **Site health** workflow checks HTTPS, the page, JavaScript, valid WASM, icon, manifest, robots and sitemap daily, manually and after publication. Health failure reports an outage independently of deployment, so initial DNS setup does not prevent publishing fixes.
+Count formatting uses locale-specific cardinal forms and preserves fractional B-permit credit. Independent Node fixtures cover all ten languages, singular/plural boundaries and half days; browser tests check the actual translated result and breakdown. Automated tests do not replace proofreading by native speakers.
+
+Dependencies are installed from the committed npm lock with `npm ci`. Dependabot reviews Go/npm/Actions weekly; CodeQL scans Go on pull requests, `main` and a weekly schedule. External-source checks are weekly/manual. The separate **Site health** workflow checks HTTPS, the page, JavaScript, valid WASM, icon, manifest, robots and sitemap daily, manually and after publication. It also runs a real Go/WASM calculation through the published UI: B half-credit, departure/return day handling, 90/91- and 365/366-day absence boundaries, validation, projections and translated mobile results in all ten languages. The smoke suite runs against the local build in CI before release as well.
+
+Post-deployment checks ignore successful workflow runs whose deployment was skipped, check out the triggering release's tests and wait up to three minutes for its exact WASM VCS stamp. A working stale release is not accepted as proof of the new release. Production failure reports are retained for seven days. Health failure reports an outage independently of deployment, so initial DNS setup does not prevent publishing fixes.
+
+**Rules review** validates manually maintained source-review dates on pull requests and `main`, and checks them daily. `docs/rules-review.json` records the quarterly cadence and explicit pre-2027 checkpoints: **15 December 2026** before entry into force, and **15 February 2027** before the application-date cut-off. When a review is due, the scheduled/manual workflow maintains one GitHub issue with official sources and a release checklist. Repeated runs do not create duplicate reminders; closing an issue alone does not record a completed review. Legal text, fees and review dates are never updated automatically. Complete the review using [the review procedure](docs/RULES_REVIEW.md), then update its metadata and all visible review dates together. An overdue reminder does not block a correction release; invalid or inconsistent metadata does fail validation.
 
 ## Production domain and HTTPS
 

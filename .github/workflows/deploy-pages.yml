@@ -132,5 +132,6 @@ jobs:
           done
           echo "::error::The exact unexpired github-pages artifact did not become consistently visible within three minutes. Publication stopped; retry this workflow after the artifact service recovers."
           exit 1
-      - id: deployment
+      - name: Publish tested site to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v5
