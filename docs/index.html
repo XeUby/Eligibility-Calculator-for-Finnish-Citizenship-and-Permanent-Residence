@@ -399,14 +399,14 @@
       const status = $("#" + prefix + "-status");
       status.textContent = window.i18n.t(language.value, eligible ? "statusGood" : "statusWait");
       status.className = "status " + (eligible ? "good" : "wait");
-      $("#" + prefix + "-days").textContent = days.toLocaleString(language.value) + " " + window.i18n.t(language.value, "days");
-      $("#" + prefix + "-required").textContent = requiredYears === 0 ? window.i18n.t(language.value, "noResidenceTime") : requiredYears + " " + window.i18n.t(language.value, "calendarYears");
+      $("#" + prefix + "-days").textContent = window.i18n.formatCount(language.value, "days", days);
+      $("#" + prefix + "-required").textContent = requiredYears === 0 ? window.i18n.t(language.value, "noResidenceTime") : window.i18n.formatCount(language.value, "calendarYears", requiredYears);
       $("#" + prefix + "-date").textContent = date ? new Intl.DateTimeFormat(language.value, { timeZone: "UTC", year: "numeric", month: "short", day: "numeric" }).format(new Date(`${date}T12:00:00Z`)) : "—";
     }
     function renderResult(result) {
       setResult("citizenship", result.citizenshipEligible, result.citizenshipDays, result.citizenshipRequiredYears, result.citizenshipEarliest);
       setResult("pr", result.prEligible, result.prDays, result.prRequiredYears, result.prEarliest);
-      const formatDays = (value) => value.toLocaleString(language.value) + " " + window.i18n.t(language.value, "days");
+      const formatDays = (value) => window.i18n.formatCount(language.value, "days", value);
       $("#breakdown-b-credit").textContent = formatDays(result.citizenshipBPermitCreditDays);
       $("#breakdown-ap-credit").textContent = formatDays(result.citizenshipAPDays);
       $("#breakdown-trip-days").textContent = formatDays(result.citizenshipAbsenceDays);

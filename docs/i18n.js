@@ -497,5 +497,67 @@ window.i18n = (() => {
   });
   auxiliary.en.warnings = {...auxiliary.en.warnings, ...en.warnings};
   Object.entries(auxiliary).forEach(([locale, values]) => { s[locale] = {...en, ...s[locale], ...values}; });
-  return { languages, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
+
+  // Complete cardinal forms for each supported locale, including fractional
+  // credit. Select the form from the same precision used to display the number.
+  // Patterns are whole phrases: Arabic singular/dual need no repeated numeral.
+  // CLDR categories: https://cldr.unicode.org/index/cldr-spec/plural-rules
+  const countPatterns = {
+    en: {
+      days: { one: "{count} day", other: "{count} days" },
+      calendarYears: { one: "{count} calendar year", other: "{count} calendar years" }
+    },
+    fi: {
+      days: { one: "{count} päivä", other: "{count} päivää" },
+      calendarYears: { one: "{count} kalenterivuosi", other: "{count} kalenterivuotta" }
+    },
+    sv: {
+      days: { one: "{count} dag", other: "{count} dagar" },
+      calendarYears: { one: "{count} kalenderår", other: "{count} kalenderår" }
+    },
+    ru: {
+      days: { one: "{count} день", few: "{count} дня", many: "{count} дней", other: "{count} дня" },
+      calendarYears: { one: "{count} календарный год", few: "{count} календарных года", many: "{count} календарных лет", other: "{count} календарного года" }
+    },
+    uk: {
+      days: { one: "{count} день", few: "{count} дні", many: "{count} днів", other: "{count} дня" },
+      calendarYears: { one: "{count} календарний рік", few: "{count} календарні роки", many: "{count} календарних років", other: "{count} календарного року" }
+    },
+    ne: {
+      days: { one: "{count} दिन", other: "{count} दिन" },
+      calendarYears: { one: "{count} क्यालेन्डर वर्ष", other: "{count} क्यालेन्डर वर्ष" }
+    },
+    ar: {
+      days: { zero: "{count} يوم", one: "يوم واحد", two: "يومان", few: "{count} أيام", many: "{count} يومًا", other: "{count} يوم" },
+      calendarYears: { zero: "{count} سنة تقويمية", one: "سنة تقويمية واحدة", two: "سنتان تقويميتان", few: "{count} سنوات تقويمية", many: "{count} سنة تقويمية", other: "{count} سنة تقويمية" }
+    },
+    so: {
+      days: { one: "{count} maalin", other: "{count} maalmood" },
+      calendarYears: { one: "{count} sannad taariikheed", other: "{count} sannado taariikheed" }
+    },
+    et: {
+      days: { one: "{count} päev", other: "{count} päeva" },
+      calendarYears: { one: "{count} kalendriaasta", other: "{count} kalendriaastat" }
+    },
+    hi: {
+      days: { one: "{count} दिन", other: "{count} दिन" },
+      calendarYears: { one: "{count} कैलेंडर वर्ष", other: "{count} कैलेंडर वर्ष" }
+    }
+  };
+  const countFormatters = new Map();
+  function formatCount(locale, unit, count) {
+    const patterns = countPatterns[locale]?.[unit];
+    if (!patterns) throw new RangeError(`Unsupported count locale or unit: ${locale}/${unit}`);
+    if (typeof count !== "number" || !Number.isFinite(count) || count < 0) throw new RangeError("A count must be a finite, non-negative number.");
+    if (!countFormatters.has(locale)) {
+      const options = { maximumFractionDigits: 3 };
+      countFormatters.set(locale, { numbers: new Intl.NumberFormat(locale, options), plurals: new Intl.PluralRules(locale, options) });
+    }
+    const { numbers, plurals } = countFormatters.get(locale);
+    const pattern = patterns[plurals.select(count)];
+    // Missing translations must be caught by tests, not replaced with English.
+    if (!pattern) throw new RangeError(`Missing count form: ${locale}/${unit}/${plurals.select(count)}`);
+    return pattern.replace("{count}", numbers.format(count));
+  }
+  return { languages, formatCount, t: (locale, key) => s[locale]?.[key] || en[key], warning: (locale, code, fallback) => s[locale]?.warnings?.[code] || fallback };
 })();
