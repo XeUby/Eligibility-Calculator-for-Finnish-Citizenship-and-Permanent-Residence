@@ -1,10 +1,34 @@
 const { test: base, expect } = require("@playwright/test");
 const { createHash } = require("node:crypto");
 
+const analyticsScript = "https://static.cloudflareinsights.com/beacon.min.js";
+const analyticsToken = "1922ab2430ff4142ba48812ec64ba179";
+
 const test = base.extend({
   page: async ({ page, baseURL }, use) => {
     const errors = [];
+    const analyticsRequests = [];
+    const outbound = [];
     const origin = new URL(baseURL).origin;
+    // Test-only history survives subsequent edits/removals. Checking only the
+    // final form would miss an earlier entered date leaked by a delayed request.
+    await page.addInitScript(() => {
+      window.__finresidenceSmokePrivateDates = [];
+      const remember = (event) => {
+        if (event.target instanceof HTMLInputElement && event.target.type === "date" && event.target.value) {
+          window.__finresidenceSmokePrivateDates.push(event.target.value);
+        }
+      };
+      document.addEventListener("input", remember, true);
+      document.addEventListener("change", remember, true);
+    });
+    // Verify the actual published loader and configuration, but do not count
+    // scheduled synthetic tests as real visits or rely on a third-party CDN.
+    // This inert response is deliberately not a mock of Cloudflare's metrics.
+    await page.route(analyticsScript, async (route) => {
+      if (route.request().method() !== "GET") return route.abort();
+      await route.fulfill({ status: 200, contentType: "application/javascript", headers: { "access-control-allow-origin": "*" }, body: "/* Synthetic site-health run: analytics intentionally disabled. */" });
+    });
     page.on("pageerror", (error) => errors.push(`JavaScript: ${error.message}`));
     page.on("console", (message) => {
       if (message.type() === "error") errors.push(`Console: ${message.text()}`);
@@ -16,11 +40,37 @@ const test = base.extend({
       }
     });
     page.on("request", (request) => {
+      outbound.push({ url: request.url(), body: request.postData() || "", headers: JSON.stringify(request.headers()) });
+      if (request.method() === "GET" && request.url() === analyticsScript) {
+        analyticsRequests.push(request);
+        return;
+      }
       if (request.method() !== "GET" || new URL(request.url()).origin !== origin) {
         errors.push(`Unexpected calculation-data request: ${request.method()} ${request.url()}`);
       }
     });
     await use(page);
+    const privateDates = await page.evaluate(() => [...new Set(window.__finresidenceSmokePrivateDates)]);
+    for (const request of outbound) {
+      const wire = request.url + request.body + request.headers;
+      for (const input of privateDates) {
+        expect(wire, "No request, including same-origin GETs, may disclose a previously entered date").not.toContain(input);
+        expect(wire).not.toContain(encodeURIComponent(input));
+      }
+    }
+    const analytics = page.locator("#cloudflare-web-analytics");
+    if (origin === "https://finresidence.fi") {
+      await expect(analytics).toHaveCount(1);
+      await expect(analytics).toHaveAttribute("src", analyticsScript);
+      await expect(analytics).toHaveAttribute("defer", "");
+      await expect(analytics).toHaveAttribute("type", "module");
+      const config = JSON.parse(await analytics.getAttribute("data-cf-beacon"));
+      expect(config, "Only this site's public token and disabled SPA tracking may be configured").toEqual({ token: analyticsToken, spa: false });
+      expect(analyticsRequests).toHaveLength(1);
+    } else {
+      await expect(analytics).toHaveCount(0);
+      expect(analyticsRequests).toHaveLength(0);
+    }
     expect(errors, "The real public calculator must not emit runtime/network errors or send input data").toEqual([]);
   }
 });

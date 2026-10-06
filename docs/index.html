@@ -110,7 +110,7 @@
     <div class="wrap">
       <p class="hero-brand">FinResidence</p>
       <div class="hero-head"><h1 data-i18n="title">Finland eligibility estimator</h1><label class="language"><span class="sr-only" data-i18n="languageLabel">Language</span><select id="language" aria-label="Language"></select></label></div>
-      <p data-i18n="intro">Estimate the residence-time part of Finnish citizenship and permanent-residence applications. Calculations run privately in this browser; no data is sent or stored.</p>
+      <p data-i18n="intro">Estimate residence-time requirements for Finnish citizenship and permanent residence. Calculations stay in your browser.</p>
     </div>
   </header>
   <main id="main-content" class="wrap">
@@ -231,7 +231,7 @@
       <div class="faq">
         <details><summary data-i18n="faqScopeQuestion">What does this estimate include?</summary><p data-i18n="faqScopeAnswer">It estimates selected residence-time rules only. It does not decide identity, income, integrity, permit grounds, special routes or Migri’s case-specific assessment.</p></details>
         <details><summary data-i18n="faqTripsQuestion">How are trips outside Finland counted?</summary><p data-i18n="faqTripsAnswer">The day you leave and return count as residence days. For citizenship, the tool applies the published 365-day total and 90-day last-year limits; overlapping trips are counted once.</p></details>
-        <details><summary data-i18n="faqPrivacyQuestion">Where is my data kept?</summary><p data-i18n="faqPrivacyAnswer">Calculations run in your browser. A draft is saved only if you press “Save on this device”, and you can remove it at any time.</p></details>
+        <details><summary data-i18n="faqPrivacyQuestion">Where is my data kept?</summary><p data-i18n="faqPrivacyAnswer">Permit dates and trips stay in your browser and are not sent to analytics. A draft is saved locally only when you choose “Save on this device”; “Clear all data” removes it. Cloudflare Web Analytics sends page-view and performance information for aggregate visit, device and referrer statistics, without analytics cookies. Hosting providers process ordinary website requests. GitHub feedback is public: use invented dates and omit personal details.</p></details>
         <details><summary data-i18n="faqDecisionQuestion">Can I apply if the site says I meet residence time?</summary><p data-i18n="faqDecisionAnswer">Not necessarily. It is not a recommendation to apply. Check every current requirement with Migri before applying.</p></details>
       </div>
     </section>
@@ -254,7 +254,8 @@
     <div>
       <p class="footer-brand">FinResidence</p>
       <p class="footer-copy"><span data-i18n="footerBy">Created by </span><a href="https://github.com/XeUby" target="_blank" rel="noopener noreferrer">Boris</a>. <span data-i18n="footerOpenSource">This website is open source.</span></p>
-      <p class="footer-privacy" data-i18n="footerPrivacy">Calculations stay on your device; this website does not collect personal data. Please do not include personal information in feedback.</p>
+      <p class="footer-privacy" data-i18n="footerPrivacy">Calculations stay on your device. Cloudflare Web Analytics measures site visits without analytics cookies. Keep personal information out of feedback.</p>
+      <p class="footer-privacy"><a href="https://developers.cloudflare.com/web-analytics/about/" target="_blank" rel="noopener noreferrer" data-i18n="analyticsPrivacyLink">About site analytics</a></p>
     </div>
     <div class="footer-links" aria-label="Project links" data-i18n-aria="projectLinks">
       <a href="https://github.com/XeUby/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence" target="_blank" rel="noopener noreferrer" data-i18n="sourceCode">View source code</a>
@@ -263,7 +264,7 @@
     </div>
   </footer>
 
-  <script src="i18n.js?v=84f824f2ddaeb64c8e2afb0c4cc89edbf296321a5693814731cbf0f964c6801d"></script>
+  <script src="i18n.js?v=4cb1e39788907f68637f2e88635bfb5c26e79f5777ced7aeceed601db329ec95"></script>
   <script>
     const $ = (selector, parent = document) => parent.querySelector(selector);
     const permitList = $("#permit-list"), absenceList = $("#absence-list");
@@ -437,6 +438,22 @@
       } catch (failure) { console.error("Calculator initialisation failed", failure); setFormError("loadError"); }
       finally { submit.disabled = false; submit.textContent = window.i18n.t(language.value, "calculate"); }
     });
+  </script>
+  <script>
+    // The public beacon token identifies this site's statistics; it is not an API credential.
+    // Keep previews and URLs with potentially private query/fragment data out of analytics.
+    // This optional loader is separate from the calculator and never reads form values.
+    (() => {
+      if (location.origin !== "https://finresidence.fi" || location.search || location.hash) return;
+      const beacon = document.createElement("script");
+      beacon.id = "cloudflare-web-analytics";
+      beacon.type = "module";
+      beacon.defer = true;
+      beacon.src = "https://static.cloudflareinsights.com/beacon.min.js";
+      beacon.setAttribute("data-cf-beacon", JSON.stringify({ token: "1922ab2430ff4142ba48812ec64ba179", spa: false }));
+      beacon.onerror = () => {}; // Ad blockers or an analytics outage must not affect estimates.
+      document.body.appendChild(beacon);
+    })();
   </script>
 </body>
 </html>

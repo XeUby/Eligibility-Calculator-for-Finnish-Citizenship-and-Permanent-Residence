@@ -168,7 +168,7 @@ test("offers a privacy-preserving feedback route and project source", async ({ p
   await page.goto("/");
   const footer = page.locator("footer");
   await expect(footer).toContainText("Created by Boris");
-  await expect(footer).toContainText("does not collect personal data");
+  await expect(footer).toContainText("Cloudflare Web Analytics measures site visits without analytics cookies.");
   await expect(footer.getByRole("link", { name: "View source code" })).toHaveAttribute("href", /XeUby\/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence$/);
   await expect(footer.getByRole("link", { name: "Report an issue" })).toHaveAttribute("href", /issues\/new\?template=bug_report\.md$/);
   await expect(footer.getByRole("link", { name: "Suggest an improvement" })).toHaveAttribute("href", /issues\/new\?template=improvement\.md$/);
