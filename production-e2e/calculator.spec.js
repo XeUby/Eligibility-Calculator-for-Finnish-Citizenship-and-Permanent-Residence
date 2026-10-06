@@ -1,4 +1,5 @@
 const { test: base, expect } = require("@playwright/test");
+const { createHash } = require("node:crypto");
 
 const test = base.extend({
   page: async ({ page, baseURL }, use) => {
@@ -43,6 +44,14 @@ async function calculate(page) {
 }
 
 test("published UI executes Go/WASM with half-credit B permits and continuous A residence", async ({ page }) => {
+  const downloaded = [];
+  const criticalAssets = ["i18n.js", "wasm_exec.js", "main.wasm"];
+  page.on("response", (response) => {
+    const url = new URL(response.url());
+    if (criticalAssets.includes(url.pathname.slice(1))) {
+      downloaded.push(response.body().then((bytes) => ({ url, hash: createHash("sha256").update(bytes).digest("hex") })));
+    }
+  });
   await openCalculator(page);
   await fillPermit(page, 0, "B", "2020-01-01", "2020-12-31");
   await page.locator("#add-permit").click();
@@ -61,6 +70,11 @@ test("published UI executes Go/WASM with half-credit B permits and continuous A 
   if (process.env.FINRESIDENCE_EXPECTED_SHA) {
     expect((await wasmResponse.body()).includes(Buffer.from(`vcs.revision=${process.env.FINRESIDENCE_EXPECTED_SHA}`)),
       "The actual browser-downloaded WASM must match the deployed commit, not only the readiness probe").toBeTruthy();
+  }
+  const assets = await Promise.all(downloaded);
+  expect(assets.map(({ url }) => url.pathname.slice(1)).sort()).toEqual([...criticalAssets].sort());
+  for (const { url, hash } of assets) {
+    expect(url.searchParams.get("v"), `The actual downloaded ${url.pathname} must match its content version`).toBe(hash);
   }
   await expect(page.locator("#citizenship-days")).toHaveText("2,017 days");
   await expect(page.locator("#pr-days")).toHaveText("1,834 days");

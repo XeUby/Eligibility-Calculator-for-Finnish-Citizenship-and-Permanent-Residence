@@ -49,11 +49,13 @@ jobs:
         run: |
           GOOS=js GOARCH=wasm go build -o docs/main.wasm ./cmd/wasm
           cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" docs/wasm_exec.js
+      - run: npm run build:assets
       - run: npm ci --ignore-scripts
       - name: Check translations and maintenance metadata
         run: |
           npm run test:unit
           npm run test:review
+          node scripts/version-assets.mjs --check
       - run: npx --no-install playwright install --with-deps chromium webkit
       - run: npm run test:e2e
       - name: Validate production smoke against the local build

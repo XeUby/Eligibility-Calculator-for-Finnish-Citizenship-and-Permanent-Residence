@@ -18,7 +18,7 @@
   <meta name="twitter:title" content="Finland eligibility estimator" id="twitter-title">
   <meta name="twitter:description" content="A private, browser-based estimate of Finnish citizenship and permanent residence time requirements." id="twitter-description">
   <title>FinResidence — Finland eligibility estimator</title>
-  <script src="wasm_exec.js"></script>
+  <script src="wasm_exec.js?v=0c949f4996f9a89698e4b5c586de32249c3b69b7baadb64d220073cc04acba14"></script>
   <style>
     :root { --ink:#13233d; --muted:#56657a; --line:#d8e1ec; --canvas:#f5f8fc; --surface:#fff; --blue:#0858bd; --blue-dark:#034190; --teal:#006b62; --teal-bg:#e6f5f1; --amber:#8a4b00; --amber-bg:#fff3db; --red:#a3262a; --radius:16px; }
     * { box-sizing:border-box; }
@@ -263,7 +263,7 @@
     </div>
   </footer>
 
-  <script src="i18n.js"></script>
+  <script src="i18n.js?v=84f824f2ddaeb64c8e2afb0c4cc89edbf296321a5693814731cbf0f964c6801d"></script>
   <script>
     const $ = (selector, parent = document) => parent.querySelector(selector);
     const permitList = $("#permit-list"), absenceList = $("#absence-list");
@@ -340,7 +340,7 @@
     async function initialiseWasm() {
       if (location.protocol === "file:") throw new Error("file-protocol");
       const go = new Go();
-      const response = await fetch("main.wasm", { cache: "no-store" });
+      const response = await fetch("main.wasm?v=ae4b899b0c63442e2fa421f7b5494fd61befe4af9b6f7068d71dc1ddcd7b5c75", { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       let instance;
       try { instance = await WebAssembly.instantiateStreaming(response.clone(), go.importObject); }

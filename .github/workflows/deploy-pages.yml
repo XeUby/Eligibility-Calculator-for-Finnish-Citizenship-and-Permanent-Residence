@@ -79,6 +79,14 @@ jobs:
         run: |
           GOOS=js GOARCH=wasm go build -o docs/main.wasm ./cmd/wasm
           cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" docs/wasm_exec.js
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Version scripts and WASM from their built content
+        run: |
+          node scripts/version-assets.mjs
+          node scripts/version-assets.mjs --check
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         id: pages-artifact

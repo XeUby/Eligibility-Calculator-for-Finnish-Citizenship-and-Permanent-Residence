@@ -295,7 +295,7 @@ test("does not publish stale inputs changed while the calculation engine is load
   let notifyRequest;
   const resume = new Promise((resolve) => { resumeEngine = resolve; });
   const requested = new Promise((resolve) => { notifyRequest = resolve; });
-  await page.route("**/main.wasm", async (route) => {
+  await page.route("**/main.wasm*", async (route) => {
     notifyRequest();
     await resume;
     await route.continue();

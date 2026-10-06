@@ -44,6 +44,7 @@ go build -o docs/main.wasm ./cmd/wasm
 Remove-Item Env:GOOS, Env:GOARCH
 $taskGoRoot = go env GOROOT
 Copy-Item "$taskGoRoot/lib/wasm/wasm_exec.js" docs/wasm_exec.js
+npm run build:assets
 go run ./cmd/server
 ```
 
@@ -53,6 +54,7 @@ Linux/macOS:
 go test ./...
 GOOS=js GOARCH=wasm go build -o docs/main.wasm ./cmd/wasm
 cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" docs/wasm_exec.js
+npm run build:assets
 go run ./cmd/server
 ```
 
@@ -91,6 +93,8 @@ The engine supplies both adapters with the same calendar calculations, warnings 
 CI checks formatting, Go vet, race-enabled Go tests, WASM build and browser flows on pull requests and `main`. Playwright runs the suite in Chromium and iPhone-sized WebKit on Linux, covering calculation, validation, drafts, all ten locales and responsive layout. WebKit emulation supplements testing on a real iPhone; it is not a device certification. Failure screenshots, traces and an HTML report are retained for 14 days.
 
 Count formatting uses locale-specific cardinal forms and preserves fractional B-permit credit. Independent Node fixtures cover all ten languages, singular/plural boundaries and half days; browser tests check the actual translated result and breakdown. Automated tests do not replace proofreading by native speakers.
+
+Each build adds SHA-256 content versions to the translation script, matching Go runtime and WASM URLs. This prevents a newly loaded page from reusing an older browser-cached script under the same URL. Run `npm run build:assets` after changing any of those files; CI and deployment do this automatically after compiling WASM. A regression scenario explicitly serves stale unversioned asset URLs and requires the updated page to ignore them. These query versions are cache invalidation, not archived immutable releases: they do not keep old builds available indefinitely for an already-open page.
 
 Dependencies are installed from the committed npm lock with `npm ci`. Dependabot reviews Go/npm/Actions weekly; CodeQL scans Go on pull requests, `main` and a weekly schedule. External-source checks are weekly/manual. The separate **Site health** workflow checks HTTPS, the page, JavaScript, valid WASM, icon, manifest, robots and sitemap daily, manually and after publication. It also runs a real Go/WASM calculation through the published UI: B half-credit, departure/return day handling, 90/91- and 365/366-day absence boundaries, validation, projections and translated mobile results in all ten languages. The smoke suite runs against the local build in CI before release as well.
 

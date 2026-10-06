@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "build:assets": "node scripts/version-assets.mjs",
     "test:unit": "node --test scripts/*.test.mjs",
     "test:review": "node scripts/check-review.mjs",
     "test:e2e": "playwright test",
