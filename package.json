@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "test:unit": "node --test scripts/*.test.mjs",
+    "test:review": "node scripts/check-review.mjs",
     "test:e2e": "playwright test",
     "test:links": "node scripts/check-links.mjs",
     "test:site": "node scripts/check-site.mjs"

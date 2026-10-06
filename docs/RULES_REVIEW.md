@@ -32,6 +32,16 @@ The review uses current detailed Migri application instructions when an older am
 
 Review at least quarterly and immediately after a relevant announcement by Migri, the Ministry of the Interior, Parliament or OPH. Review again before releasing a rule, fee or effective-date change. Successful link checks only show that a URL responds; they do not establish that its legal content is unchanged.
 
+### Automated maintenance reminder, not an automatic legal review
+
+[`rules-review.json`](rules-review.json) records the manually checked date, a three-calendar-month review interval and the next deadline. The current first deadline is **15 December 2026**, before the known **1 January 2027** entry into force. A separate **15 February 2027** checkpoint requires review before the **1 March 2027** application cut-off. These reminder dates are maintenance choices, not new legal effective dates. The quarterly deadline from the current review is **5 January 2027**.
+
+The **Rules review** workflow validates these dates on pull requests and `main`. Its daily/manual run on `main` uses only repository-content read and issue-write permissions to maintain one bot-owned issue with an exact identifier. It reuses that issue, preserves notes and same-cycle checklist progress, and avoids repeated updates while the due state is unchanged. Due reminders do not fail application builds; malformed or inconsistent dates do. A passing workflow never changes legislation, prices or a source-review date.
+
+After an actual source review, manually update `lastReviewed`, the visible dates and this record together. Compute `nextReview` as the earliest of the three-calendar-month deadline and any unacknowledged checkpoint. Set a checkpoint's `reviewedOn` only when its specific sources and transition details were checked; an early review can explicitly acknowledge a checkpoint. Keep acknowledgement dates no later than `lastReviewed`. Closing the GitHub issue alone is not completion: it reopens if the metadata still records a due review. Once recorded deadlines are no longer due, the next daily/manual run closes the managed reminder. Date comparisons use strict UTC calendar dates, avoiding daylight-saving-time arithmetic.
+
+Run `npm run test:unit` and `npm run test:review`; `node scripts/check-review.mjs --as-of 2026-12-15` can preview a deadline without creating an issue. Only `--issue` performs GitHub issue writes and requires the workflow's scoped token. The checker also guards against drift between the metadata, README, review record, English page fallback and English translation review dates. All ten translated dates still require human review.
+
 - Confirm legal entry-into-force dates separately from application-date cut-offs, plus residence periods, permit types, trip treatment and exceptions.
 - Review each path's language, work, income, degree and ongoing permit-ground conditions. Record which are shown as guidance, explicitly confirmed by the visitor, calculated, or outside scope.
 - Use current detailed application guidance if a press release or older summary conflicts; record the discrepancy and primary source. Seek specialist review if it remains unresolved.

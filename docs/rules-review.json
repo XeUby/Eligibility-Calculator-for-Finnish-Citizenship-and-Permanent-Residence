@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "lastReviewed": "2026-10-05",
+  "reviewIntervalMonths": 3,
+  "nextReview": "2026-12-15",
+  "checkpoints": [
+    {
+      "id": "citizenship-2027-entry",
+      "label": "Recheck the enacted civic-knowledge requirement before its entry into force",
+      "reviewBy": "2026-12-15",
+      "changeDate": "2027-01-01",
+      "reviewedOn": null,
+      "source": "https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027"
+    },
+    {
+      "id": "citizenship-2027-applications",
+      "label": "Recheck published test details, alternatives, exemptions and fees before the application-date cut-off",
+      "reviewBy": "2027-02-15",
+      "changeDate": "2027-03-01",
+      "reviewedOn": null,
+      "source": "https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027"
+    }
+  ]
+}
