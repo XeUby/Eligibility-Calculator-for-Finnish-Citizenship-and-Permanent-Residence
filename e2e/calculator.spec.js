@@ -172,6 +172,14 @@ test("offers a privacy-preserving feedback route and project source", async ({ p
   await expect(footer.getByRole("link", { name: "View source code" })).toHaveAttribute("href", /XeUby\/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence$/);
   await expect(footer.getByRole("link", { name: "Report an issue" })).toHaveAttribute("href", /issues\/new\?template=bug_report\.md$/);
   await expect(footer.getByRole("link", { name: "Suggest an improvement" })).toHaveAttribute("href", /issues\/new\?template=improvement\.md$/);
+  for (const locale of locales) {
+    await page.locator("#language").selectOption(locale);
+    const author = footer.getByRole("link", { name: "Boris", exact: true });
+    await expect(author).toHaveAttribute("href", "https://valuranta.fi/#about");
+    await expect(author).toHaveAttribute("target", "_blank");
+    await expect(author).toHaveAttribute("rel", "noopener noreferrer");
+    await expect(footer.locator("[data-i18n=sourceCode]")).toHaveAttribute("href", /XeUby\/Eligibility-Calculator-for-Finnish-Citizenship-and-Permanent-Residence$/);
+  }
 });
 
 test("saves an optional local draft and clears it on request", async ({ page }) => {
