@@ -16,6 +16,17 @@ The review uses current detailed Migri application instructions when an older am
 - Citizenship calculation safeguards: an initial B period is credited at half before the first A/P period; where that credit is used, at least one uninterrupted A/P year is required by the decision. The estimator conservatively requires it by the selected calculation date. Departure and return days stay in residence time; overlapping absences count once. The preceding-year allowance must be reassessed at a projected application date. A continuous stay abroad of more than five years interrupts residence under §16 and requires review instead of a reliable projected date. The strict statutory threshold takes precedence over shorthand in guidance. [Citizenship residence calculation](https://migri.fi/en/how-to-calculate-the-period-of-residence), [Nationality Act §§15–16](https://www.finlex.fi/en/legislation/2003/359)
 - Fees must be checked against the current adult application pages and OPH YKI information. Preserve the separate citizenship and permanent-permit electronic/paper fees and YKI level fees; do not infer upcoming fees. [Migri processing fees](https://migri.fi/en/processing-fees-and-payment-methods), [OPH YKI registration and fees](https://www.oph.fi/en/education-and-qualifications/registering-yki-test)
 
+## Scoped information update: 9 October 2026
+
+Checked [Migri's 9 October bulletin](https://migri.fi/en/-/up-to-date-information-on-amendments-to-citizenship-act-learning-material-for-citizenship-test-to-be-published-at-turn-of-the-year), the [2027 summary](https://migri.fi/en/amendments-to-the-citizenship-act-2027) and [citizenship FAQ](https://migri.fi/en/faq-finnish-citizenship). The bulletin and summary were read from the live official pages; this newly published bulletin may not yet appear in search indexes.
+
+- Keep **1 January 2027** entry into force distinct from the **1 March 2027** application cut-off and the transition ending **28 February 2027**. The requirement applies to citizenship applications by applicants aged **18–64**, not citizenship declarations. Applicants using the test must pass it before submitting their application.
+- Both educational alternatives must be completed in Finland: a qualifying matriculation examination in Finnish or Swedish, or a Finnish-/Swedish-language higher education degree. Do not treat an English-language degree, an arbitrary foreign degree, vocational studies or a YKI certificate as fulfilling civic knowledge. Derogations and supporting evidence need Migri's assessment.
+- The test is computer-based, multiple-choice, taken at a venue in Finnish or Swedish; the result does not expire. The University of Helsinki prepares the learning material and questions. Migri plans to publish self-study material at the turn of **2026/2027**. Do not link to unofficial materials as though they were the published official syllabus.
+- Migri plans **6–10 national test sessions per year**, not 6–10 in every city. The announced 2027 locations are the Helsinki capital region, Tampere, Turku, Oulu, Kuopio, Vaasa and Rovaniemi. Test dates and registration times are to be published by the turn of the year. Do not invent booking dates, test duration, pass marks, a registration URL or a fee amount.
+- Special arrangements can be requested in advance; an oral test may be available for people unable to read or write. The calculator does not decide exemptions or arrangements.
+- Updated the visible information and all ten translations, keeping the requirement separate from the residence-time estimate. No residence calculation rule was changed. The overall **5 October 2026** review date and unacknowledged December/February review checkpoints remain unchanged: this scoped bulletin check does not certify a new full rules/fees review.
+
 ## Required primary sources
 
 1. [Migri: citizenship application for adults](https://migri.fi/en/citizenship-for-adults)
@@ -27,6 +38,9 @@ The review uses current detailed Migri application instructions when an older am
 7. [Migri: processing fees](https://migri.fi/en/processing-fees-and-payment-methods)
 8. [OPH: YKI registration and fees](https://www.oph.fi/en/education-and-qualifications/registering-yki-test)
 9. [Migri: citizenship civic-knowledge change and application-date transition](https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027)
+10. [Migri: citizenship-test practical information, 9 October 2026](https://migri.fi/en/-/up-to-date-information-on-amendments-to-citizenship-act-learning-material-for-citizenship-test-to-be-published-at-turn-of-the-year)
+11. [Migri: amendments to the Citizenship Act 2027](https://migri.fi/en/amendments-to-the-citizenship-act-2027)
+12. [Migri: citizenship FAQ, including civic knowledge](https://migri.fi/en/faq-finnish-citizenship)
 
 ## When and how to review
 

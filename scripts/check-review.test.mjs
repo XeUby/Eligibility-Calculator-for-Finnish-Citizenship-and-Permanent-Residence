@@ -180,7 +180,7 @@ test("real repository metadata and all visible canonical dates agree", async () 
   assert.equal(result.status.lastReviewed, record.lastReviewed);
   assert.equal(result.status.nextReview, record.nextReview);
   assert.equal(result.status.reviewAgeDays, 0);
-  assert.equal(result.sources.length, 9);
+  assert.equal(result.sources.length, 12);
 });
 
 test("same review cycle preserves checkboxes and user notes", () => {

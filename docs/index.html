@@ -24,7 +24,7 @@
     * { box-sizing:border-box; }
     body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--canvas); line-height:1.5; overflow-wrap:anywhere; }
     a { color:var(--blue); }
-    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid #ffbf47; outline-offset:2px; }
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline:3px solid #ffbf47; outline-offset:2px; }
     .skip-link { position:absolute; left:12px; top:-60px; z-index:10; padding:9px 12px; border-radius:7px; background:#fff; color:var(--blue-dark); font-weight:700; }
     .skip-link:focus { top:12px; }
     .wrap { width:min(1100px, calc(100% - 32px)); margin:auto; }
@@ -85,6 +85,7 @@
     .breakdown-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:0 18px; }
     .breakdown .metric { font-size:.94rem; }
     .faq { display:grid; gap:10px; }
+    #citizenship-test-update > .help { margin-bottom:14px; }
     details { padding:14px 16px; border:1px solid var(--line); border-radius:10px; background:#f8fbff; }
     summary { cursor:pointer; color:var(--ink); font-weight:750; }
     details p { margin:9px 0 0; color:var(--muted); }
@@ -222,8 +223,44 @@
         <article class="resource"><h3 data-i18n="costCitTitle">Citizenship application</h3><p data-i18n="costCitBody">€550 online · €650 paper application</p><p><a href="https://migri.fi/en/processing-fees-and-payment-methods" target="_blank" rel="noopener noreferrer" data-i18n="costMigriLink">Official Migri fee list</a></p></article>
         <article class="resource"><h3 data-i18n="costPrTitle">Permanent residence permit</h3><p data-i18n="costPrBody">€380 online · €600 paper application</p><p><a href="https://migri.fi/en/processing-fees-and-payment-methods" target="_blank" rel="noopener noreferrer" data-i18n="costMigriLink">Official Migri fee list</a></p></article>
         <article class="resource"><h3 data-i18n="costYkiTitle">YKI language test</h3><p data-i18n="costYkiBody">Basic €165 · Intermediate €190 · Advanced €216</p><p class="field-help" data-i18n="costYkiNote">The intermediate YKI test is one common way to demonstrate the language requirement. Check the accepted alternatives.</p><p><a href="https://www.oph.fi/en/education-and-qualifications/registering-yki-test" target="_blank" rel="noopener noreferrer" data-i18n="costYkiLink">Official YKI registration and fees</a></p></article>
-        <article class="resource"><h3 data-i18n="costCivicTitle">Citizenship test from 2027</h3><p data-i18n="costCivicBody">The fee has not been published by Migri yet.</p><p class="field-help" data-i18n="costCivicNote">The civic-knowledge requirement applies to applications submitted from 1 March 2027. Migri says more practical information will be published during autumn 2026.</p><p><a href="https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027" target="_blank" rel="noopener noreferrer" data-i18n="costTestLink">Citizenship-test update</a></p></article>
+        <article class="resource"><h3 data-i18n="costCivicTitle">Citizenship test from 2027</h3><p data-i18n="costCivicBody">The fee has not been published by Migri yet.</p><p class="field-help" data-i18n="costCivicNote">Applies to citizenship applications from 1 March 2027. Migri plans to publish learning material, test dates and registration times at the turn of 2026/2027.</p><p><a href="https://migri.fi/en/-/up-to-date-information-on-amendments-to-citizenship-act-learning-material-for-citizenship-test-to-be-published-at-turn-of-the-year" target="_blank" rel="noopener noreferrer" data-i18n="costTestLink">Citizenship-test update</a></p></article>
       </div>
+    </section>
+
+    <section id="citizenship-test-update" class="panel" aria-labelledby="civic-update-heading">
+      <h2 id="civic-update-heading" data-i18n="civicUpdateTitle">Citizenship test — update of 9 October 2026</h2>
+      <p class="help" data-i18n="civicScope">This is a separate citizenship requirement. This calculator estimates residence time only and does not assess civic knowledge.</p>
+      <section class="notice" aria-labelledby="upcoming-heading">
+        <strong id="upcoming-heading" data-i18n="upcomingTitle">Confirmed upcoming citizenship change — applications from 1 March 2027</strong>
+        <span data-i18n="upcomingText">Applicants aged 18–64 must meet the civic-knowledge requirement. If you use the new citizenship test, pass it before submitting your application. Alternatives and exemptions exist.</span>
+      </section>
+      <div class="faq">
+        <details open>
+          <summary data-i18n="civicWhenTitle">Who needs it and from when?</summary>
+          <p data-i18n="civicWhenBody">The Act changes take effect on 1 January 2027, with a transition through 28 February. The civic-knowledge requirement applies to citizenship applications submitted from 1 March 2027 by applicants aged 18–64. If you use the test to meet it, pass the test before submitting your application.</p>
+          <p data-i18n="civicAlternativesBody">Alternatives include a matriculation examination completed in Finland in Finnish or Swedish, or a Finnish- or Swedish-language higher education degree completed in Finland. Statutory exemptions may apply, for example for long-term health or disability reasons; Migri assesses them.</p>
+          <p data-i18n="civicYkiBody">A YKI certificate demonstrates language skills; it does not replace the civic-knowledge requirement.</p>
+          <p data-i18n="civicDeclarationBody">This new requirement does not apply to citizenship declarations.</p>
+        </details>
+        <details>
+          <summary data-i18n="civicFormatTitle">Test format and result</summary>
+          <p data-i18n="civicFormatBody">A computer-based multiple-choice test in Finnish or Swedish, taken at a test venue. The result does not expire. The test will have a fee, but the amount has not yet been published.</p>
+        </details>
+        <details>
+          <summary data-i18n="civicPreparationTitle">How to prepare</summary>
+          <p data-i18n="civicPreparationBody">The University of Helsinki will prepare the learning material and questions. Migri plans to publish the self-study material at the turn of 2026/2027. Topics include Finnish society and legislation, rights, equality, history and culture.</p>
+        </details>
+        <details>
+          <summary data-i18n="civicSessionsTitle">Test locations and registration</summary>
+          <p data-i18n="civicSessionsBody">Migri plans 6–10 test sessions per year on national test days. In 2027, venues will be in the Helsinki capital region, Tampere, Turku, Oulu, Kuopio, Vaasa and Rovaniemi. Test dates and registration times are to be published by the turn of 2026/2027. No booking dates are announced in this update.</p>
+        </details>
+        <details>
+          <summary data-i18n="civicSupportTitle">Special arrangements</summary>
+          <p data-i18n="civicSupportBody">Special arrangements may be requested in advance for illness, disability or reading and writing difficulties. People unable to read or write may take an oral test. Check the official instructions when published.</p>
+        </details>
+      </div>
+      <p><a href="https://migri.fi/en/-/up-to-date-information-on-amendments-to-citizenship-act-learning-material-for-citizenship-test-to-be-published-at-turn-of-the-year" target="_blank" rel="noopener noreferrer" data-i18n="officialUpdate">Read Migri’s official update</a></p>
+      <p><a href="https://migri.fi/en/amendments-to-the-citizenship-act-2027" target="_blank" rel="noopener noreferrer" data-i18n="civicSummaryLink">Migri: amendments to the Citizenship Act 2027</a></p>
     </section>
 
     <section class="panel" aria-labelledby="faq-heading">
@@ -237,10 +274,6 @@
     </section>
 
     <section class="panel" aria-labelledby="sources-heading">
-      <section class="notice" aria-labelledby="upcoming-heading">
-        <strong id="upcoming-heading" data-i18n="upcomingTitle">Confirmed upcoming citizenship change — applications from 1 March 2027</strong>
-        <span data-i18n="upcomingText">Applicants aged 18–64 will need to meet a civic-knowledge requirement. Migri says this can normally be met with the new citizenship test, with specified alternatives and exemptions.</span> <a href="https://migri.fi/en/-/finland-to-introduce-citizenship-test-as-changes-to-citizenship-act-take-effect-on-1-january-2027" target="_blank" rel="noopener noreferrer" data-i18n="officialUpdate">Read Migri’s official update</a>.
-      </section>
       <h2 id="sources-heading" data-i18n="officialInfo">Official information</h2>
       <p class="help" data-i18n="reviewed">Rules and fees can change. Last reviewed: 5 October 2026.</p>
       <div class="resources">
@@ -264,7 +297,7 @@
     </div>
   </footer>
 
-  <script src="i18n.js?v=4cb1e39788907f68637f2e88635bfb5c26e79f5777ced7aeceed601db329ec95"></script>
+  <script src="i18n.js?v=5b4f6fdedab2213254e255c156a6909785ac4cd6336dccc578008008bfce15b4"></script>
   <script>
     const $ = (selector, parent = document) => parent.querySelector(selector);
     const permitList = $("#permit-list"), absenceList = $("#absence-list");
