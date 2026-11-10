@@ -23,4 +23,5 @@ jobs:
         with:
           node-version: 24
           package-manager-cache: false
-      - run: npm run test:links
+      - run: node --test scripts/check-links.test.mjs
+      - run: npm run test:links -- --github-runner

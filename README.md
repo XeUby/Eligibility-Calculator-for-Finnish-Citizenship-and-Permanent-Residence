@@ -74,6 +74,8 @@ npm run test:e2e
 
 Linux CI installs the browsers' system dependencies as well. To run only desktop Chromium locally, use `npm run test:e2e -- --project=chromium`. `npm run test:links` checks official/external links; `npm run test:site` checks the public HTTPS site and its essential assets.
 
+Link checks limit each source hostname to two concurrent checks and retry temporary errors once. The local command is strict: broken and unverified links fail the check. In GitHub Actions only, if all Migri source links return HTTP 403 from Migri itself, they are reported as **unverified** in the job summary and a warning is emitted. That access restriction alone does not fail the job; individual 403s, confirmed 404/410 responses, and other failures still do. Run the strict command from a network with access to Migri to verify the sources.
+
 `npm run test:production` exercises the live public calculator in Chromium, with invented permit/trip dates only. It needs Chromium installed but starts no development server. To validate the same smoke tests against a running local server before publication:
 
 ```powershell
