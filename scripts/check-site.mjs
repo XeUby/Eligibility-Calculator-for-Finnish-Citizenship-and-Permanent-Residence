@@ -8,6 +8,9 @@ const assets = [
   { path: "wasm_exec.js", type: /(?:text|application)\/javascript/ },
   { path: "main.wasm", wasm: true },
   { path: "favicon.svg", type: /image\/svg\+xml/, contains: /<svg\b/ },
+  { path: "favicon-96.png", type: /image\/png/ },
+  { path: "apple-touch-icon.png", type: /image\/png/ },
+  { path: "favicon.ico", type: /image\/(?:x-icon|vnd\.microsoft\.icon)/ },
   { path: "site.webmanifest", contains: /"name"\s*:/ },
   { path: "robots.txt", contains: /Sitemap:\s*https:\/\/finresidence\.fi\/sitemap\.xml/ },
   { path: "sitemap.xml", contains: /<loc>https:\/\/finresidence\.fi\/<\/loc>/ }
