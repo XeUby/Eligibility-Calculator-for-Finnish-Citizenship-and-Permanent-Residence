@@ -20,7 +20,8 @@ test("publishes discoverable icons and a keyboard-accessible brand header", asyn
   await expect(brand).not.toHaveCSS("outline-width", "0px");
   await topbar.locator("#language").focus();
   await expect(topbar.locator("#language")).toBeFocused();
-  await expect(page.locator(".hero-art")).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator(".hero-art")).toHaveCount(0);
+  await expect(page.locator(".hero-head svg, .hero-head img")).toHaveCount(0);
 });
 
 for (const width of [320, 390, 768, 1440]) {

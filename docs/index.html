@@ -35,10 +35,9 @@
     .site-topbar { display:flex; align-items:center; justify-content:space-between; gap:24px; padding-block:20px; border-bottom:1px solid #cfdee7; }
     .brand-link { display:inline-flex; align-items:center; gap:11px; min-width:0; min-height:44px; color:var(--blue); text-decoration:none; font-size:1.2rem; font-weight:800; letter-spacing:-.04em; }
     .brand-link img { display:block; flex:none; border-radius:12px; }
-    .hero-head { display:grid; grid-template-columns:minmax(0,1fr) 290px; align-items:center; gap:48px; padding-block:48px 52px; }
+    .hero-head { padding-block:36px 40px; }
     .hero-copy { min-width:0; }
     .hero-copy > p { max-width:650px; margin:18px 0 0; color:var(--muted); font-size:1.05rem; }
-    .hero-art { width:100%; height:auto; display:block; }
     h1 { min-width:0; max-width:760px; margin:0; font-size:clamp(2.3rem,4.7vw,3.55rem); line-height:1.12; font-weight:780; letter-spacing:-.045em; overflow-wrap:anywhere; text-wrap:balance; }
     h1:lang(ne), h1:lang(hi), h1:lang(ar) { line-height:1.35; letter-spacing:normal; }
     h2 { font-size:1.35rem; line-height:1.35; font-weight:750; letter-spacing:-.025em; margin:0; }
@@ -118,8 +117,8 @@
     .footer-links a { display:inline-flex; align-items:center; min-height:44px; padding:10px 12px; border:1px solid #bacddc; border-radius:9px; color:var(--blue); font-weight:700; text-decoration:none; }
     .footer-links a:hover { background:#edf5ff; }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-    @media (max-width:960px) { .hero-head { grid-template-columns:minmax(0,1fr) 210px; gap:28px; } .history-row { gap:10px; padding:14px; } }
-    @media (max-width:720px) { .history-row,.absence-row,.choices,.result-grid,.resources,.hero-head,.site-footer,.breakdown-grid { grid-template-columns:minmax(0,1fr); } .history-row { align-items:stretch; } .remove { width:100%; } .section-head { display:block; } .section-head button { width:100%; margin-top:16px; } .hero-head { padding-block:32px 38px; gap:0; } .hero-art { display:none; } .panel { padding:22px; } .footer-links { justify-content:flex-start; } .site-topbar { gap:14px; padding-block:16px; } .language { width:142px; } }
+    @media (max-width:960px) { .history-row { gap:10px; padding:14px; } }
+    @media (max-width:720px) { .history-row,.absence-row,.choices,.result-grid,.resources,.site-footer,.breakdown-grid { grid-template-columns:minmax(0,1fr); } .history-row { align-items:stretch; } .remove { width:100%; } .section-head { display:block; } .section-head button { width:100%; margin-top:16px; } .hero-head { padding-block:32px 38px; } .panel { padding:22px; } .footer-links { justify-content:flex-start; } .site-topbar { gap:14px; padding-block:16px; } .language { width:142px; } }
     @media (max-width:420px) { .wrap { width:calc(100% - 28px); } .site-topbar { gap:8px; } .brand-link { gap:7px; font-size:1rem; letter-spacing:-.035em; } .brand-link img { width:32px; height:32px; border-radius:9px; } .language { width:118px; } .language select { padding-inline-start:9px; padding-inline-end:26px; background-position:right 8px center; } [dir=rtl] .language select { background-position:left 8px center; } h1 { font-size:clamp(2rem,9vw,2.5rem); } .hero-copy > p { font-size:1rem; } .panel { padding:18px; border-radius:16px; } .history-row { padding:13px; } .metric { align-items:start; flex-direction:column; gap:3px; } .metric strong { text-align:start; } .result { padding:18px; } .notice { padding:15px 17px; } }
   </style>
 </head>
@@ -136,28 +135,6 @@
           <h1 data-i18n="title">Finland eligibility estimator</h1>
           <p data-i18n="intro">Estimate residence-time requirements for Finnish citizenship and permanent residence. Calculations stay in your browser.</p>
         </div>
-        <svg class="hero-art" viewBox="0 0 320 280" fill="none" aria-hidden="true" focusable="false">
-          <rect x="10" y="18" width="300" height="244" rx="56" fill="#dcefe9"/>
-          <path d="M27 175v38c0 16 13 29 29 29h192" stroke="#9ccfc3" stroke-width="2" stroke-dasharray="5 7"/>
-          <rect x="48" y="40" width="192" height="206" rx="20" transform="rotate(-8 48 40)" fill="#c3d7e3"/>
-          <rect x="68" y="39" width="192" height="208" rx="20" fill="#c5d8df"/>
-          <rect x="66" y="32" width="192" height="208" rx="20" fill="white"/>
-          <path d="M66 52c0-11 9-20 20-20h152c11 0 20 9 20 20v42H66V52Z" fill="#123d67"/>
-          <path d="M105 23v25m114-25v25" stroke="#87b1c0" stroke-width="9" stroke-linecap="round"/>
-          <path d="M90 72h66" stroke="#d6e4ef" stroke-width="6" stroke-linecap="round"/>
-          <rect x="90" y="114" width="32" height="28" rx="6" fill="#dcebf2"/>
-          <rect x="146" y="114" width="32" height="28" rx="6" fill="#dcebf2"/>
-          <rect x="202" y="114" width="32" height="28" rx="6" fill="#dcebf2"/>
-          <rect x="90" y="155" width="32" height="28" rx="6" fill="#dcebf2"/>
-          <rect x="146" y="155" width="32" height="28" rx="6" fill="#a9edce"/>
-          <rect x="202" y="155" width="32" height="28" rx="6" fill="#dcebf2"/>
-          <path d="M90 210h64m12 0h18" stroke="#d2e3ea" stroke-width="6" stroke-linecap="round"/>
-          <circle cx="249" cy="219" r="35" fill="#eaf1f6"/>
-          <circle cx="249" cy="219" r="29" fill="#0a746b"/>
-          <path d="m236 219 9 9 18-19" stroke="#d2f9e5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="29" cy="160" r="6" fill="#0a746b"/>
-          <path d="M288 49v16m-8-8h16" stroke="#88b9af" stroke-width="3" stroke-linecap="round"/>
-        </svg>
       </div>
     </div>
   </header>
